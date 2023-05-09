@@ -113,7 +113,7 @@ fun initializeTest(simulator: TableBottomSimulatorServer) {
 
     val mapObject = simulator.createAndAddGameObject()
     mapObject.size = Vector2(4000.0, 4000.0)
-    mapObject.position = mapObject.size / 2
+    mapObject.position = Vector2.zero()
     mapObject.background = "http://localhost:8089/minigames/birmingham/images/common/map.jpg"
     mapObject.shape = "rectangle"
     mapObject.getOrCreateAndAddBehaviorByType(ControllerBehavior.TYPE).draggable = false

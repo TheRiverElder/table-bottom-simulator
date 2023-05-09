@@ -12,7 +12,7 @@ class ControlChannel(name: String, simulator: TableBottomSimulatorServer) : Chan
         val gameObject = simulator.gameObjects[uid] ?: return
         gameObject.position = restoreVector2(data["position"]!!.jsonObject)
         gameObject.size = restoreVector2(data["size"]!!.jsonObject)
-        gameObject.rotation = data["rotation"]!!.jsonPrimitive.double
+        gameObject.rotation = data["rotation"]?.jsonPrimitive?.double ?: 0.0
         gameObject.background = data["background"]?.jsonPrimitive?.content ?: gameObject.background
         gameObject.shape = data["shape"]?.jsonPrimitive?.content ?: gameObject.shape
         runBlocking {
