@@ -32,9 +32,10 @@ class TableBottomSimulatorServer {
         channels.add(channelIncrementalUpdate)
     }
 
-    fun createGameObject() = GameObject(this, genUid())
-    fun createAndAddGameObject(): GameObject {
-        val gameObject = GameObject(this, genUid())
+    fun createGameObject(uid: Int = genUid()) = GameObject(this, uid)
+
+    fun createAndAddGameObject(uid: Int = genUid()): GameObject {
+        val gameObject = GameObject(this, uid)
         gameObjects += gameObject
         return gameObject
     }

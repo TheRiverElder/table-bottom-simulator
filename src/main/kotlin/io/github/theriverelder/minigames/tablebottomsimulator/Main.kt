@@ -1,7 +1,8 @@
 package io.github.theriverelder.minigames.tablebottomsimulator
 
 import io.github.theriverelder.minigames.lib.math.Vector2
-import io.github.theriverelder.minigames.tablebottomsimulator.builtin.ControllerBehavior
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.ControllerBehavior
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.initializeBasic
 import io.github.theriverelder.minigames.tablebottomsimulator.channel.ControlChannel
 import io.github.theriverelder.minigames.tablebottomsimulator.user.User
 import io.ktor.server.application.*
@@ -13,19 +14,7 @@ import kotlin.math.PI
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-fun initializeBasic(simulator: TableBottomSimulatorServer, userCount: Int) {
-    simulator.channels.add(ControlChannel("control", simulator))
 
-    simulator.behaviorTypes.add(ControllerBehavior.TYPE)
-
-    simulator.gameObjects.onAdd.add { it.createAndAddBehavior(ControllerBehavior.TYPE) }
-
-    for (i in 0 until userCount) {
-        val uid = simulator.genUid()
-        val user = User(simulator, uid, "User$uid")
-        simulator.users.add(user)
-    }
-}
 
 fun Application.module() {
     configureRouting()

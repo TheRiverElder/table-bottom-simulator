@@ -1,4 +1,4 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.builtin
+package io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior
 
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.BehaviorAdaptor
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.BehaviorType

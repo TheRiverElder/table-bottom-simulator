@@ -26,6 +26,7 @@ open class Registry<K, V>(
     operator fun plusAssign(value: V) { add(value) }
     operator fun minusAssign(value: V) { remove(value) }
     operator fun contains(value: V) = map.containsKey(getKey(value))
+    fun containsKey(key: K) = map.containsKey(key)
 
 
 }

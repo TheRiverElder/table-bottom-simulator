@@ -14,6 +14,13 @@ fun Vector2.save() = buildJsonObject {
 fun restoreVector2(data: JsonObject): Vector2 =
     Vector2(data["x"]?.jsonPrimitive?.double ?: 0.0, data["y"]?.jsonPrimitive?.double ?: 0.0)
 
+fun restoreVector2OrNull(data: JsonObject?): Vector2? {
+    if (data == null) return null
+    return Vector2(
+        data["x"]?.jsonPrimitive?.double ?: 0.0,
+        data["y"]?.jsonPrimitive?.double ?: 0.0,
+    )
+}
 
 fun Number.save() = JsonPrimitive(this)
 fun String.save() = JsonPrimitive(this)

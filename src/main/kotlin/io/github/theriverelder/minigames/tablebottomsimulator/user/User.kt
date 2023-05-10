@@ -13,6 +13,7 @@ class User(
     var name: String,
     var sight: Vector2 = Vector2.zero(),
     var color: String = "white",
+    var isEditor: Boolean = true,
 ) : Persistable {
     var destroyed: Boolean = false
 
@@ -25,12 +26,15 @@ class User(
         put("name", JsonPrimitive(name))
         put("sight", sight.save())
         put("color", JsonPrimitive(color))
+        put("isEditor", JsonPrimitive(isEditor))
+        put("destroyed", JsonPrimitive(destroyed))
     }
 
     override fun restore(data: JsonObject) {
         name = data["name"]?.jsonPrimitive?.content!!
         sight = restoreVector2(data["sight"]?.jsonObject!!)
         color = data["color"]!!.jsonPrimitive.content
+        isEditor = data["isEditor"]?.jsonPrimitive?.booleanOrNull ?: false
     }
 
 
