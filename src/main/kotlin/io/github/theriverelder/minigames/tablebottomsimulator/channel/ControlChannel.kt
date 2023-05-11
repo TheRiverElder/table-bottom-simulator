@@ -15,6 +15,11 @@ class ControlChannel(name: String, simulator: TableBottomSimulatorServer) : Chan
         gameObject.rotation = data["rotation"]?.jsonPrimitive?.double ?: 0.0
         gameObject.background = data["background"]?.jsonPrimitive?.content ?: gameObject.background
         gameObject.shape = data["shape"]?.jsonPrimitive?.content ?: gameObject.shape
+        data["behaviors"]?.jsonArray?.forEach {
+            val behaviorData = it.jsonObject
+            val behaviorUid = behaviorData["uid"]!!.jsonPrimitive.int
+            gameObject.behaviors[behaviorUid]?.restoreData(behaviorData)
+        }
         runBlocking {
             simulator.channelIncrementalUpdate.broadcastGameObjectUpdate(gameObject)
         }
