@@ -20,6 +20,11 @@ abstract class  Behavior<T : Behavior<T>>(
         onInitialize()
     }
 
+    fun remove() {
+        host.behaviors.remove(this)
+        this.onDestroy()
+    }
+
     override fun save(): JsonObject = buildJsonObject {
         put("type", JsonPrimitive(type.name))
         put("uid", JsonPrimitive(uid))

@@ -13,7 +13,7 @@ fun initializeBasic(simulator: TableBottomSimulatorServer, userCount: Int) {
 
     simulator.behaviorTypes.add(ControllerBehavior.TYPE)
 
-    simulator.gameObjects.onAdd.add { it.createAndAddBehavior(ControllerBehavior.TYPE) }
+//    simulator.gameObjects.onAdd.add { it.createAndAddBehavior(ControllerBehavior.TYPE) }
 
     for (i in 0 until userCount) {
         val uid = simulator.genUid()

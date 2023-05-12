@@ -2,6 +2,7 @@ package io.github.theriverelder.minigames.tablebottomsimulator.channel
 
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.ControllerBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.user.User
 import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2
 import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2OrNull
@@ -20,6 +21,8 @@ class EditChannel(name: String, simulator: TableBottomSimulatorServer) : Channel
                 val position = restoreVector2OrNull(data["position"]?.jsonObject) ?: Vector2.zero()
                 val gameObject = simulator.createAndAddGameObject()
                 gameObject.position = position
+                gameObject.size = Vector2(100.0, 100.0)
+                gameObject.createAndAddBehavior(ControllerBehavior.TYPE)
                 simulator.channelIncrementalUpdate.broadcastGameObjectUpdate(gameObject)
             }
             "pasteGameObject" -> {
@@ -40,6 +43,24 @@ class EditChannel(name: String, simulator: TableBottomSimulatorServer) : Channel
                 val gameObject = simulator.gameObjects[uid]
                 if (gameObject != null) {
                     gameObject.remove()
+                    simulator.channelIncrementalUpdate.broadcastGameObjectUpdate(gameObject)
+                }
+            }
+            "createBehavior" -> {
+                val uid = data["uid"]?.jsonPrimitive?.int ?: throw Exception("No uid")
+                val gameObject = simulator.gameObjects[uid] ?: throw Exception("No game object with uid: $uid")
+                val typeName = data["type"]?.jsonPrimitive?.content ?: throw Exception("No type")
+                val type = simulator.behaviorTypes[typeName] ?: throw Exception("No behavior type: $typeName")
+                gameObject.createAndAddBehavior(type)
+                simulator.channelIncrementalUpdate.broadcastGameObjectUpdate(gameObject)
+            }
+            "removeBehavior" -> {
+                val uid = data["uid"]?.jsonPrimitive?.int ?: throw Exception("No uid")
+                val gameObject = simulator.gameObjects[uid] ?: throw Exception("No game object with uid: $uid")
+                val behaviorUid = data["behaviorUid"]?.jsonPrimitive?.int ?: throw Exception("No behaviorUid")
+                val behavior = gameObject.behaviors[behaviorUid]
+                if (behavior != null) {
+                    behavior.remove()
                     simulator.channelIncrementalUpdate.broadcastGameObjectUpdate(gameObject)
                 }
             }
