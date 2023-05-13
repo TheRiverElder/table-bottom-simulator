@@ -7,7 +7,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 
 class FullUpdateChannel(name: String, simulator: TableBottomSimulatorServer) : Channel(name, simulator) {
-    override fun onReceive(data: JsonObject, sender: User) { }
+    override fun receive(data: JsonObject, sender: User) { }
 
     suspend fun sendFullUpdate(receiver: User) {
         send(buildJsonObject {

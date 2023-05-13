@@ -7,6 +7,7 @@ open class Registry<K, V>(
     private val map = HashMap<K, V>()
 
     operator fun get(key: K): V? = map[key]
+    fun getOrThrow(key: K): V = map[key] ?: throw Exception("No such key: $key")
 //    operator fun set(key: K, value: V) { map[key] = value }
 
     open fun add(value: V): Boolean {

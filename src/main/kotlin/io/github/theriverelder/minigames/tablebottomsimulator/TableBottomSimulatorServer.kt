@@ -5,10 +5,9 @@ import io.github.theriverelder.minigames.lib.management.Registry
 import io.github.theriverelder.minigames.tablebottomsimulator.channel.Channel
 import io.github.theriverelder.minigames.tablebottomsimulator.channel.FullUpdateChannel
 import io.github.theriverelder.minigames.tablebottomsimulator.channel.IncrementalUpdateChannel
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.Behavior
+import io.github.theriverelder.minigames.tablebottomsimulator.channel.BehaviorInstructionChannel
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.BehaviorType
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObject
-import io.github.theriverelder.minigames.tablebottomsimulator.user.Gamer
 import io.github.theriverelder.minigames.tablebottomsimulator.user.User
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -26,10 +25,12 @@ class TableBottomSimulatorServer {
 
     val channelFullUpdateChannel = FullUpdateChannel("full_update", this)
     val channelIncrementalUpdate = IncrementalUpdateChannel("incremental_update", this)
+    val channelBehaviorInstruction = BehaviorInstructionChannel("behavior_instruction", this)
 
     init {
         channels.add(channelFullUpdateChannel)
         channels.add(channelIncrementalUpdate)
+        channels.add(channelBehaviorInstruction)
     }
 
     fun createGameObject(uid: Int = genUid()) = GameObject(this, uid)

@@ -2,6 +2,7 @@ package io.github.theriverelder.minigames.tablebottomsimulator.gameobject
 
 import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.user.User
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.JsonPrimitive
@@ -16,9 +17,6 @@ abstract class  Behavior<T : Behavior<T>>(
     val simulator: TableBottomSimulatorServer
         get() = host.simulator
 
-    init {
-        onInitialize()
-    }
 
     fun remove() {
         host.behaviors.remove(this)
@@ -28,17 +26,22 @@ abstract class  Behavior<T : Behavior<T>>(
     override fun save(): JsonObject = buildJsonObject {
         put("type", JsonPrimitive(type.name))
         put("uid", JsonPrimitive(uid))
-        saveData()
     }
 
-    override fun restore(data: JsonObject) {
-        restoreData(data)
-    }
+    // 对客户端发送指令
+    fun sendInstruction(data: JsonObject, receivers: Collection<User>? = null) =
+        simulator.channelBehaviorInstruction.sendInstruction(this, data, receivers)
 
-    abstract fun JsonObjectBuilder.saveData()
-    abstract fun restoreData(data: JsonObject)
+    // 从客户端接收指令
+    abstract fun receiveInstruction(data: JsonObject, sender: User)
 
+    fun sendUpdate() = simulator.channelIncrementalUpdate.sendUpdateBehavior(this)
+
+    override fun restore(data: JsonObject) { }
+
+    // 当第一次被加入到GameObject后调用
     abstract fun onInitialize()
+    // 当被移除时调用
     abstract fun onDestroy()
 
 }

@@ -37,5 +37,5 @@ class User(
         isEditor = data["isEditor"]?.jsonPrimitive?.booleanOrNull ?: false
     }
 
-
+    override fun toString(): String = "$name#$uid($color)"
 }

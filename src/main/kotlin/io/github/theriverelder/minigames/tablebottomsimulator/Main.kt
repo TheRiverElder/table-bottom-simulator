@@ -3,12 +3,11 @@ package io.github.theriverelder.minigames.tablebottomsimulator
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.ControllerBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.initializeBasic
-import io.github.theriverelder.minigames.tablebottomsimulator.channel.ControlChannel
-import io.github.theriverelder.minigames.tablebottomsimulator.user.User
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import java.lang.Error
 import java.lang.Exception
 import kotlin.math.PI
 
@@ -76,6 +75,9 @@ fun Application.configureSockets() {
                     communication.receiveRawData(receivedText, user)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                } catch (e: Error) {
+                    e.printStackTrace()
+                    break
                 }
             }
 
@@ -105,13 +107,21 @@ fun initializeTest(simulator: TableBottomSimulatorServer) {
     mapObject.position = Vector2.zero()
     mapObject.background = "http://localhost:8089/minigames/birmingham/images/common/map.jpg"
     mapObject.shape = "rectangle"
-    mapObject.getOrCreateAndAddBehaviorByType(ControllerBehavior.TYPE).draggable = false
-    
-    val coinObject = simulator.createAndAddGameObject()
-    coinObject.position = Vector2(100.0, 100.0)
-    coinObject.size = Vector2(100.0, 100.0)
-    coinObject.rotation = 0.2 * PI
-    coinObject.shape = "circle"
-    coinObject.background = "http://localhost:8089/minigames/birmingham/images/common/coin_15.png"
+
+    val coin15Object = simulator.createAndAddGameObject()
+    coin15Object.position = Vector2(100.0, 100.0)
+    coin15Object.size = Vector2(100.0, 100.0)
+    coin15Object.rotation = 0.2 * PI
+    coin15Object.shape = "circle"
+    coin15Object.background = "http://localhost:8089/minigames/birmingham/images/common/coin_15.png"
+    coin15Object.getOrCreateAndAddBehaviorByType(ControllerBehavior.TYPE).draggable = false
+
+    val coin5Object = simulator.createAndAddGameObject()
+    coin5Object.position = Vector2(100.0, 100.0)
+    coin5Object.size = Vector2(80.0, 80.0)
+    coin5Object.rotation = 0.2 * PI
+    coin5Object.shape = "circle"
+    coin5Object.background = "http://localhost:8089/minigames/birmingham/images/common/coin_5.png"
+//    coin5Object.getOrCreateAndAddBehaviorByType(ControllerBehavior.TYPE).draggable = false
 
 }
