@@ -3,6 +3,7 @@ package io.github.theriverelder.minigames.tablebottomsimulator
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.ControllerBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.initializeBasic
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.initializeBirmingham
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
@@ -92,6 +93,7 @@ fun Application.configureSockets() {
 fun initializeSimulator(): TableBottomSimulatorServer {
     val simulator = TableBottomSimulatorServer()
     initializeBasic(simulator, 2)
+    initializeBirmingham(simulator)
     initializeTest(simulator)
 
     println("Valid users: ")
