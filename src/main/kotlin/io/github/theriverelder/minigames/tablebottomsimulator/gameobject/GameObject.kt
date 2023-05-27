@@ -57,9 +57,11 @@ open class GameObject(
             val d = behaviorData.jsonObject
             val behaviorTypeName = (d["type"] ?: throw Exception("No field: behavior[x].type")).jsonPrimitive.content
             val behaviorUid = (d["uid"] ?: throw Exception("No field: behavior[x].uid")).jsonPrimitive.int
-            val behavior = behaviors[behaviorUid]
-                ?: simulator.behaviorTypes[behaviorTypeName]?.create(this, behaviorUid)
-                ?: throw Exception("No behavior type: $behaviorTypeName")
+            var behavior = behaviors[behaviorUid]
+            if (behavior == null) {
+                val type = simulator.behaviorTypes[behaviorTypeName] ?: throw Exception("No behavior type: $behaviorTypeName")
+                behavior = createAndAddBehavior(type)
+            }
             behavior.restore(d)
             behaviors += behavior
         }
