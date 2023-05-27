@@ -105,12 +105,6 @@ fun initializeSimulator(): TableBottomSimulatorServer {
 
 fun initializeTest(simulator: TableBottomSimulatorServer) {
 
-    val mapObject = simulator.createAndAddGameObject()
-    mapObject.size = Vector2(4000.0, 4000.0)
-    mapObject.position = Vector2.zero()
-    mapObject.background = "http://localhost:8089/minigames/birmingham/images/common/map.jpg"
-    mapObject.shape = "rectangle"
-
     val coin15Object = simulator.createAndAddGameObject()
     coin15Object.position = Vector2(100.0, 100.0)
     coin15Object.size = Vector2(100.0, 100.0)
