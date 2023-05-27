@@ -52,9 +52,10 @@ fun Application.configureSockets() {
             val userUid = userUidString.toInt()
 
             if (userUid in userSessions) {
-                close(CloseReason(200, "User #${userUid} already in"))
-                println("Connection error: User #${userUid} already in")
-                return@webSocket
+                userSessions[userUid]?.close(CloseReason(200, "User #${userUid} reconnect in"))
+//                close(CloseReason(200, "User #${userUid} already in"))
+//                println("Connection error: User #${userUid} already in")
+//                return@webSocket
             }
 
             val user = simulator.users[userUid] ?: run {
