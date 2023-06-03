@@ -8,6 +8,7 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.runBlocking
 import java.lang.Error
 import java.lang.Exception
 import kotlin.math.PI
@@ -74,7 +75,9 @@ fun Application.configureSockets() {
                 try {
                     frame as? Frame.Text ?: continue
                     val receivedText = frame.readText()
-                    communication.receiveRawData(receivedText, user)
+                    runBlocking { // 希望能阻止各种意外bug
+                        communication.receiveRawData(receivedText, user)
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 } catch (e: Error) {
