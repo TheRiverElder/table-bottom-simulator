@@ -3,6 +3,8 @@ package io.github.theriverelder.minigames.tablebottomsimulator.user
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardSeries
 import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2
 import io.github.theriverelder.minigames.tablebottomsimulator.util.save
 import kotlinx.serialization.json.*
@@ -14,6 +16,7 @@ class User(
     var sight: Vector2 = Vector2.zero(),
     var color: String = "white",
     var isEditor: Boolean = true,
+    var cards: List<Card> = emptyList(),
 ) : Persistable {
     var destroyed: Boolean = false
 
@@ -27,6 +30,7 @@ class User(
         put("sight", sight.save())
         put("color", JsonPrimitive(color))
         put("isEditor", JsonPrimitive(isEditor))
+        put("cards", buildJsonArray { cards.forEach { add(it.save()) } })
         put("destroyed", JsonPrimitive(destroyed))
     }
 
@@ -35,6 +39,11 @@ class User(
         sight = restoreVector2(data["sight"]?.jsonObject!!)
         color = data["color"]!!.jsonPrimitive.content
         isEditor = data["isEditor"]?.jsonPrimitive?.booleanOrNull ?: false
+        cards = data["cards"]?.jsonArray?.map { Card(
+            it.jsonObject["name"]?.jsonPrimitive.toString(),
+            CardSeries.SERIES[it.jsonObject["seriesName"]?.jsonPrimitive.toString()]!!,
+            it.jsonObject["face"]?.jsonPrimitive.toString(),
+            ) } ?: emptyList()
     }
 
     override fun toString(): String = "$name#$uid($color)"

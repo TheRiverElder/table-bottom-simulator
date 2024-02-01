@@ -3,6 +3,7 @@ package io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior
 import io.github.theriverelder.minigames.lib.management.Registry
 import io.github.theriverelder.minigames.lib.util.addAll
 import io.github.theriverelder.minigames.lib.util.forceGet
+import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.BehaviorAdaptor
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.BehaviorType
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObject
@@ -61,8 +62,17 @@ class CardSeries(
 
 }
 
-class Card(
+data class Card (
     val name: String,
     val series: CardSeries,
     val face: String,
-)
+) : Persistable {
+    override fun save(): JsonObject = buildJsonObject {
+        put("name", name)
+        put("seriesName", series.name)
+        put("face", face)
+    }
+
+    override fun restore(data: JsonObject) { }
+
+}

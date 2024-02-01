@@ -13,11 +13,10 @@ class BehaviorInstructionChannel(name: String, simulator: TableBottomSimulatorSe
         val behaviorUid = data.forceGet("behaviorUid").jsonPrimitive.int
         val instruction = data.forceGet("instruction").jsonObject
 
-        val behavior = simulator.gameObjects[hostUid]?.behaviors?.get(behaviorUid)
-        if (behavior != null) {
-            behavior.receiveInstruction(instruction, sender)
-            simulator.channelIncrementalUpdate.sendUpdateBehavior(behavior)
-        }
+        val behavior = simulator.gameObjects[hostUid]?.behaviors?.get(behaviorUid) ?: return
+
+        behavior.receiveInstruction(instruction, sender)
+        simulator.channelIncrementalUpdate.sendUpdateBehavior(behavior)
     }
 
     fun sendInstruction(behavior: Behavior<*>, instruction: JsonObject, receivers: Collection<User>? = null) {

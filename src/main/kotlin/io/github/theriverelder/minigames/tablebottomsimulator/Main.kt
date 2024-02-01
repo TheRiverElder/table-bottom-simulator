@@ -113,7 +113,7 @@ fun initializeTest(simulator: TableBottomSimulatorServer) {
     coin15Object.size = Vector2(100.0, 100.0)
     coin15Object.rotation = 0.2 * PI
     coin15Object.shape = "circle"
-    coin15Object.background = "http://localhost:8089/minigames/birmingham/images/common/coin_15.png"
+    coin15Object.background = "http://localhost:8089/minigames/birmingham/image/common/coin_15.png"
     coin15Object.getOrCreateAndAddBehaviorByType(ControllerBehavior.TYPE).draggable = false
 
     val coin5Object = simulator.createAndAddGameObject()
@@ -121,7 +121,7 @@ fun initializeTest(simulator: TableBottomSimulatorServer) {
     coin5Object.size = Vector2(80.0, 80.0)
     coin5Object.rotation = 0.2 * PI
     coin5Object.shape = "circle"
-    coin5Object.background = "http://localhost:8089/minigames/birmingham/images/common/coin_5.png"
+    coin5Object.background = "http://localhost:8089/minigames/birmingham/image/common/coin_5.png"
 //    coin5Object.getOrCreateAndAddBehaviorByType(ControllerBehavior.TYPE).draggable = false
 
 }

@@ -9,14 +9,14 @@ import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.C
 
 // 只是注册一些主要的BehaviorType
 fun initializeBirmingham(simulator: TableBottomSimulatorServer) {
-    val cardSeries = CardSeries("birmingham", "http://localhost:8089/minigames/birmingham/images/common/card_back.jpg")
+    val cardSeries = CardSeries("birmingham", "http://localhost:8089/minigames/birmingham/image/common/card_back.jpg")
     createAndAddCard(cardSeries, CARD_NAMES)
     CardSeries.SERIES.add(cardSeries)
 
     val mapObject = simulator.createAndAddGameObject()
     mapObject.size = Vector2(4000.0, 4000.0)
     mapObject.position = Vector2.zero()
-    mapObject.background = "http://localhost:8089/minigames/birmingham/images/common/map.jpg"
+    mapObject.background = "http://localhost:8089/minigames/birmingham/image/common/map.jpg"
     mapObject.shape = "rectangle"
 
     val cardGameObject = simulator.createAndAddGameObject()
@@ -60,7 +60,7 @@ val CARD_NAMES = listOf(
 
 fun createAndAddCard(series: CardSeries, names: Collection<String>) {
     for (name in names) {
-        val face = "http://localhost:8089/minigames/birmingham/images/common/cards/${name}.jpg"
+        val face = "http://localhost:8089/minigames/birmingham/image/common/cards/${name}.jpg"
         val card = Card(name, series, face)
         series.cards.add(card)
     }
