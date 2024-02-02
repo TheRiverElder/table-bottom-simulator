@@ -5,9 +5,9 @@ import io.github.theriverelder.minigames.lib.management.Registry
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.save
 import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2
 import io.github.theriverelder.minigames.tablebottomsimulator.util.save
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.*
 import java.lang.Exception
 
@@ -21,6 +21,7 @@ open class GameObject(
     var rotation: Double = 0.0
     var background: String = ""
     var shape: String = "circle"
+    val tags = Registry(GameObjectTag::name)
 
     fun remove() {
         simulator.gameObjects.remove(this)
@@ -74,6 +75,7 @@ open class GameObject(
         put("rotation", rotation.save())
         put("background", background.save())
         put("shape", shape.save())
+        put("tags", tags.values.save())
     }
 
     fun restoreSelf(data: JsonObject) {
@@ -82,5 +84,14 @@ open class GameObject(
         rotation = (data["rotation"] ?: throw Exception("No field: rotation")).jsonPrimitive.double
         background = (data["background"] ?: throw Exception("No field: background")).jsonPrimitive.content
         shape = (data["shape"] ?: throw Exception("No field: shape")).jsonPrimitive.content
+
+        tags.clear()
+        (data["tags"] ?: throw Exception("No field: tags")).jsonArray.forEach {
+            val tagData = it.jsonObject
+            val name = tagData.jsonPrimitive.content
+            val tag = GameObjectTag(name)
+            tag.restore(tagData)
+            tags.add(tag)
+        }
     }
 }

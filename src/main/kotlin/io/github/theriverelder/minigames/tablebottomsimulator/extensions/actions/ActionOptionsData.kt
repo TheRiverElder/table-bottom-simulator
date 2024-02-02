@@ -1,6 +1,6 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions
 
-data class ActionOption(
+data class ActionOptionsData(
     val text: String,
-    val callback: Function<Unit>,
+    val options: List<String>,
 )

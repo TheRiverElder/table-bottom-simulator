@@ -21,6 +21,8 @@ open class Registry<K, V>(
 
     open fun removeByKey(key: K): V? = map.remove(key)
 
+    fun clear() = map.clear()
+
     val keys: Set<K> = map.keys
     val values: Collection<V> = map.values
 
