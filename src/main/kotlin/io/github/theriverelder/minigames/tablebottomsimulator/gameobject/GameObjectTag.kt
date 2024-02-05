@@ -38,3 +38,10 @@ class GameObjectTag(
         } } ?: emptyList())
     }
 }
+
+fun restoreGameObjectTag(data: JsonObject): GameObjectTag {
+    val name: String = data["name"]!!.jsonPrimitive.content
+    val tag = GameObjectTag(name)
+    tag.restore(data)
+    return tag
+}

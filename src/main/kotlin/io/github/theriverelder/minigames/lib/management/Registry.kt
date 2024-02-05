@@ -23,6 +23,8 @@ open class Registry<K, V>(
 
     fun clear() = map.clear()
 
+    val size: Int get() = map.size
+
     val keys: Set<K> = map.keys
     val values: Collection<V> = map.values
 

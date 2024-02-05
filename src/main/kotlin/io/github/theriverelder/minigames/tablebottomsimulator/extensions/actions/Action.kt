@@ -1,8 +1,9 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions
 
 interface Action {
-    var options: List<ActionOption>
-    fun update()
+    val options: ActionOptions?
+
     fun reset()
+    val fulfilled: Boolean
     fun perform()
 }
