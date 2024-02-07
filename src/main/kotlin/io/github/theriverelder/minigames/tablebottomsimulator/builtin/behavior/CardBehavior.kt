@@ -19,6 +19,7 @@ class CardBehavior(type: BehaviorType<CardBehavior>, host: GameObject, uid: Int)
         set(value) {
             if (series == null && value != null) series = value.series
             field = value
+            refreshHost()
         }
 
     override fun onInitialize() {

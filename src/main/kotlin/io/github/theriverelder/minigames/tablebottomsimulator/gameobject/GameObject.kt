@@ -69,12 +69,12 @@ open class GameObject(
     }
 
     fun saveSelf(): JsonObject = buildJsonObject {
-        put("uid", JsonPrimitive(uid))
+        put("uid", uid)
         put("position", position.save())
         put("size", size.save())
-        put("rotation", rotation.save())
-        put("background", background.save())
-        put("shape", shape.save())
+        put("rotation", rotation)
+        put("background", background)
+        put("shape", shape)
         put("tags", tags.values.save())
     }
 
