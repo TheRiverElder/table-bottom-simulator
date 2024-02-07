@@ -6,7 +6,7 @@ plugins {
 
 group = "io.github.theriverelder.minigames"
 version = "1.0-SNAPSHOT"
-val ktor_version = "2.3.0"
+val ktor_version = "2.3.8"
 
 repositories {
     mavenCentral()

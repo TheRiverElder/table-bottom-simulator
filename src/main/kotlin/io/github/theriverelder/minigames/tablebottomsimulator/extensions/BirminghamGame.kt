@@ -49,16 +49,21 @@ class BirminghamGame(
         val cardCandidates = CardSeries.SERIES["birmingham"]!!.cards
 
         for (index in 0 until gamerAmount) {
+//            println("gamer ${index}")
             val gamer = simulator.gamers.addRaw { Gamer(simulator, it) }
-            val cardUidList = (0 until 10).map {
+            gamer.home = Vector2(3000.0, -3000.0 + 1000 * index)
+            val cardUidList = (0 until 6).map { i ->
+//                println("card ${i} of ${index}")
                 val gameObject = simulator.gameObjects.addRaw { GameObject(simulator, it) }
                 gameObject.size = Vector2(500.0, 702.0)
-                gameObject.position = Vector2(-100.0, -100.0)
+                gameObject.shape = "rectangle"
+                gameObject.position = gamer.home + Vector2(300.0 * i, 0.0)
 
                 val cardBehavior = gameObject.createAndAddBehavior(CardBehavior.TYPE)
                 cardBehavior.card = cardCandidates[CARD_NAMES[random.nextInt(0, cardCandidates.size)]]
 
-                simulator.gameObjects.add(gameObject)
+                gameObject.sendUpdateFull()
+//                println(gameObject.uid)
                 gameObject.uid
             }
             gamer.cardObjectUidList = cardUidList

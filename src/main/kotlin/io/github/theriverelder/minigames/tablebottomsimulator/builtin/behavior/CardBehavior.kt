@@ -16,6 +16,10 @@ class CardBehavior(type: BehaviorType<CardBehavior>, host: GameObject, uid: Int)
     var flipped: Boolean = false
     var series: CardSeries? = null
     var card: Card? = null
+        set(value) {
+            if (series == null && value != null) series = value.series
+            field = value
+        }
 
     override fun onInitialize() {
         this.refreshHost()

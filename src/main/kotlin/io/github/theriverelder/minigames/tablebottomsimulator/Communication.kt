@@ -1,6 +1,7 @@
 package io.github.theriverelder.minigames.tablebottomsimulator
 
 import io.github.theriverelder.minigames.tablebottomsimulator.user.User
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -13,7 +14,11 @@ class Communication(
 ) {
 
 
-    suspend fun sendRawData(rawData: String, receiver: User) = rawDataSender(rawData, receiver)
+    suspend fun sendRawData(rawData: String, receiver: User) {
+        runBlocking {
+            rawDataSender(rawData, receiver)
+        }
+    }
 
     fun receiveRawData(rawData: String, sender: User) {
         val pack = Json.decodeFromString<JsonObject>(rawData)

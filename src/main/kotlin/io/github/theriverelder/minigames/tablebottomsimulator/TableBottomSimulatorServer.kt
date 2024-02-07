@@ -31,6 +31,9 @@ class TableBottomSimulatorServer {
         channels.add(channelGamePlayer)
         channels.add(channelBehaviorInstruction)
 
+        gameObjects.onAdd.add { channelGameObject.sendUpdateGameObjectFull(it) }
+        gameObjects.onRemove.add { channelGameObject.sendRemoveGameObject(it) }
+
         users.onAdd.add { users.values.forEach { channelGamePlayer.sendUsers(it) } }
         users.onRemove.add { user ->
             gamers.values.forEach { if (it.userUid == user.uid) it.userUid = null }
