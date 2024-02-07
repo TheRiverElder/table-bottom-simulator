@@ -8,28 +8,7 @@ import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.C
 
 // 只是注册一些主要的BehaviorType
 fun initializeBirmingham(simulator: TableBottomSimulatorServer) {
-    val cardSeries = CardSeries("birmingham", "http://localhost:8089/minigames/birmingham/image/common/card_back.jpg")
-    createAndAddCard(cardSeries, CARD_NAMES)
-    CardSeries.SERIES.add(cardSeries)
-
-    val mapObject = simulator.createAndAddGameObject()
-    mapObject.size = Vector2(4000.0, 4000.0)
-    mapObject.position = Vector2.zero()
-    mapObject.background = "http://localhost:8089/minigames/birmingham/image/common/map.jpg"
-    mapObject.shape = "rectangle"
-
-    val cardGameObject = simulator.createAndAddGameObject()
-    cardGameObject.shape = "rectangle"
-    cardGameObject.size = Vector2(500.0, 702.0)
-    val cardBehavior = cardGameObject.createAndAddBehavior(CardBehavior.TYPE)
-    cardBehavior.series = cardSeries
-    cardBehavior.card = cardSeries.cards["birmingham"]
-
-    val birminghamGame = BirminghamGame(simulator)
-    birminghamGame.initialize()
-
-    val channel = BirminghamInstructionChannel("birmingham_instruction", simulator, birminghamGame)
-    simulator.channels.add(channel)
+    val extension = BirminghamExtension(simulator)
 }
 
 val CARD_NAMES = listOf(

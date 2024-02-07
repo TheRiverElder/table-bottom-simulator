@@ -17,7 +17,6 @@ class User(
     var sight: Vector2 = Vector2.zero(),
     var color: String = "white",
     var isEditor: Boolean = true,
-    var cardObjectUidList: List<Int> = emptyList(),
 ) : Persistable {
     var destroyed: Boolean = false
 
@@ -31,7 +30,6 @@ class User(
         put("sight", sight.save())
         put("color", JsonPrimitive(color))
         put("isEditor", JsonPrimitive(isEditor))
-        put("cardObjectUidList", buildJsonArray { cardObjectUidList.forEach { add(it) } })
         put("destroyed", JsonPrimitive(destroyed))
     }
 
@@ -40,12 +38,7 @@ class User(
         sight = restoreVector2(data["sight"]?.jsonObject!!)
         color = data["color"]!!.jsonPrimitive.content
         isEditor = data["isEditor"]?.jsonPrimitive?.booleanOrNull ?: false
-        cardObjectUidList = data["cardObjectUidList"]?.jsonArray?.map { it.jsonPrimitive.int } ?: emptyList()
     }
-
-    val cards: List<Card> get() = cardObjects.map { it.getBehaviorByType(CardBehavior.TYPE)!!.card!! }
-
-    val cardObjects: List<GameObject> get() = cardObjectUidList.map { simulator.gameObjects[it]!! }
 
     override fun toString(): String = "$name#$uid($color)"
 }

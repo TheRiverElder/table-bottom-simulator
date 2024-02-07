@@ -17,11 +17,12 @@ class TableBottomSimulatorServer {
 
     val behaviorTypes = Registry(BehaviorType<*>::name)
 
-//    val gamers = Registry(Gamer::name)
+    //    val gamers = Registry(Gamer::name)
     val users = Registry(User::uid)
     val gameObjects = ObservableRegistry(GameObject::uid)
     val channels = Registry(Channel::name)
     var communication: Communication? = null
+    var extensions = Registry(Extension::name)
 
     val channelFullUpdateChannel = FullUpdateChannel("full_update", this)
     val channelIncrementalUpdate = IncrementalUpdateChannel("incremental_update", this)
@@ -39,6 +40,10 @@ class TableBottomSimulatorServer {
         val gameObject = GameObject(this, uid)
         gameObjects += gameObject
         return gameObject
+    }
+
+    fun addExtension(extension: Extension) {
+        this.extensions.add(extension)
     }
 
 }

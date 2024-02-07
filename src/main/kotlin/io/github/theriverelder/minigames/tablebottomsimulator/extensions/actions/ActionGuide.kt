@@ -1,9 +1,9 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions
 
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamUser
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
 
-class ActionGuide(val user: BirminghamUser) {
+class ActionGuide(val birminghamGamer: BirminghamGamer) {
 
     var costCardObjectUid: Int? = null
     var action: Action? = null
@@ -16,14 +16,14 @@ class ActionGuide(val user: BirminghamUser) {
 
     fun update() {
         val costCardObjectUid = costCardObjectUid
-        val simulator = user.simulatorUser.simulator
+        val simulator = birminghamGamer.game.simulator
         val costCard =
             if (costCardObjectUid != null) simulator.gameObjects[costCardObjectUid]!!.getBehaviorByType(CardBehavior.TYPE)!!.card else null
         val action = action
         if (costCard == null) {
             options = ActionOptions(
                 "选择一张手牌：",
-                user.simulatorUser.cardObjects.map { cardObject ->
+                birminghamGamer.cardObjects.map { cardObject ->
                     val card = cardObject.getBehaviorByType(CardBehavior.TYPE)!!.card!!
                     ActionOption(card.name) { this.costCardObjectUid = cardObject.uid }
                 }
@@ -33,7 +33,7 @@ class ActionGuide(val user: BirminghamUser) {
                 "选择以下行动之一：",
                 actionCreators.map { creator ->
                     ActionOption(creator.name) {
-                        this.action = creator.create(user, costCard)
+                        this.action = creator.create(birminghamGamer, costCard)
                     }
                 }
             )
@@ -44,7 +44,7 @@ class ActionGuide(val user: BirminghamUser) {
                 "确认行动",
                 listOf(ActionOption("确认") {
                     action.perform()
-                    user.game.step()
+                    birminghamGamer.game.step()
                 })
             )
         }
@@ -57,11 +57,17 @@ class ActionGuide(val user: BirminghamUser) {
             function()
             update()
         }
+
+        birminghamGamer.game.listenerGameStateUpdated.emit(birminghamGamer.game)
+        birminghamGamer.game.listenerActionOptionsUpdated.emit(birminghamGamer)
     }
 
     fun reset() {
         costCardObjectUid = null
         action = null
         options = null
+
+        birminghamGamer.game.listenerGameStateUpdated.emit(birminghamGamer.game)
+        birminghamGamer.game.listenerActionOptionsUpdated.emit(birminghamGamer)
     }
 }
