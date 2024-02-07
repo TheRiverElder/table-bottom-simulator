@@ -1,5 +1,6 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.gameobject
 
+import io.github.theriverelder.minigames.lib.management.AutoIncrementObservableRegistry
 import io.github.theriverelder.minigames.lib.management.ObservableRegistry
 import io.github.theriverelder.minigames.lib.management.Registry
 import io.github.theriverelder.minigames.lib.math.Vector2
@@ -28,13 +29,12 @@ open class GameObject(
         behaviors.values.forEach { it.onDestroy() }
     }
 
-    val behaviors = ObservableRegistry(Behavior<*>::uid)
+    val behaviors = AutoIncrementObservableRegistry(Behavior<*>::uid)
 
     fun <T : Behavior<T>> createAndAddBehavior(type: BehaviorType<T>): T {
-        val behavior = type.create(this)
-        behaviors.add(behavior)
+        val behavior = behaviors.addRaw { type.create(this, it) }
         behavior.onInitialize()
-        return behavior
+        return behavior as T
     }
 
     fun <T : Behavior<T>> getBehaviorByType(type: BehaviorType<T>): T? =
@@ -43,9 +43,9 @@ open class GameObject(
     fun <T : Behavior<T>> getOrCreateAndAddBehaviorByType(type: BehaviorType<T>): T =
         behaviors.values.find { it.type == type } as? T ?: createAndAddBehavior(type)
 
-    fun sendUpdateFull() = simulator.channelIncrementalUpdate.sendUpdateGameObjectFull(this)
+    fun sendUpdateFull() = simulator.channelGameObject.sendUpdateGameObjectFull(this)
 
-    fun sendUpdateSelf() = simulator.channelIncrementalUpdate.sendUpdateGameObjectSelf(this)
+    fun sendUpdateSelf() = simulator.channelGameObject.sendUpdateGameObjectSelf(this)
 
     override fun save(): JsonObject = buildJsonObject {
         saveSelf().entries.forEach { put(it.key, it.value) }

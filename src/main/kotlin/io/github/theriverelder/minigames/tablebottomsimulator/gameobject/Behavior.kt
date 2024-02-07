@@ -35,7 +35,7 @@ abstract class  Behavior<T : Behavior<T>>(
     // 从客户端接收指令
     abstract fun receiveInstruction(data: JsonObject, sender: User)
 
-    fun sendUpdate() = simulator.channelIncrementalUpdate.sendUpdateBehavior(this)
+    fun sendUpdate() = simulator.channelGameObject.sendUpdateBehavior(this)
 
     override fun restore(data: JsonObject) { }
 

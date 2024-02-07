@@ -1,24 +1,63 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.user
 
+import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
+import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObject
+import kotlinx.serialization.json.*
 
 class Gamer(
-    val name: String,
-    val color: String,
+    val simulator: TableBottomSimulatorServer,
+    val uid: Int,
+    var userUid: Int? = null,
+    var color: String = "white",
+    var cardObjectUidList: List<Int> = emptyList(),
 ) : Persistable {
-    var user: User? = null
+
+    var user: User?
+        get() {
+            return simulator.users[userUid ?: return null]
+        }
+        set(value) {
+            user?.gamerUid = null
+            userUid = value?.uid
+            value?.gamer?.userUid = null
+            value?.gamerUid = uid
+        }
+
 
     override fun save(): JsonObject = buildJsonObject {
-        put("name", JsonPrimitive(name))
-        put("color", JsonPrimitive(color))
+        put("uid", uid)
+        put("userUid", userUid)
+        put("color", color)
+        put("cardObjectUidList", buildJsonArray { cardObjectUidList.forEach { add(it) } })
     }
 
-    override fun restore(data: JsonObject) { }
+    override fun restore(data: JsonObject) {
+        userUid = data.forceGet("userUid").jsonPrimitive.int
+        color = data.forceGet("color").jsonPrimitive.content
+        cardObjectUidList = data["cardObjectUidList"]?.jsonArray?.map { it.jsonPrimitive.int } ?: emptyList()
+    }
+
+    // 提取信息，只有自己可以看到自己的手牌
+    fun extractData(user: User): JsonObject = buildJsonObject {
+        put("uid", uid)
+        put("userUid", userUid)
+        put("color", color)
+        put("cardAmount", cardObjectUidList.size)
+        if (userUid == user.uid) put("cardObjectUidList", buildJsonArray { cardObjectUidList.forEach { add(it) } })
+    }
+
+    val cards: List<Card> get() = cardObjects.map { it.getBehaviorByType(CardBehavior.TYPE)!!.card!! }
+
+    val cardObjects: List<GameObject> get() = cardObjectUidList.map { simulator.gameObjects[it]!! }
 }
 
-fun restoreGamer(data: JsonObject): Gamer =
-    Gamer(data["name"]!!.jsonPrimitive.content, data["color"]!!.jsonPrimitive.content)
+fun restoreGamer(data: JsonObject, simulator: TableBottomSimulatorServer): Gamer {
+    val uid = data.forceGet("uid").jsonPrimitive.int
+    val gamer = Gamer(simulator, uid)
+    gamer.restore(data)
+    return gamer
+}

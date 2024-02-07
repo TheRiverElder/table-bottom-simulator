@@ -3,7 +3,7 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions.action
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
 
-class LoanAction(val birminghamGamer: BirminghamGamer, costCard: Card) : ActionBase(birminghamGamer.user, costCard) {
+class LoanAction(val birminghamGamer: BirminghamGamer, costCard: Card) : ActionBase(birminghamGamer.user!!, costCard) {
 
     override val options: ActionOptions get() = ActionOptions("确认耻辱贷款", listOf(ActionOption("确认", { })))
 

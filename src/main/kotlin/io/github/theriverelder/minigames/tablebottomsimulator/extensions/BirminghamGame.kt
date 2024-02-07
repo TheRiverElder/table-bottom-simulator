@@ -2,28 +2,33 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 
 import io.github.theriverelder.minigames.lib.management.ListenerManager
 import io.github.theriverelder.minigames.lib.math.Vector2
+import io.github.theriverelder.minigames.lib.util.forceGet
+import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardSeries
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.ActionGuide
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObject
-import io.github.theriverelder.minigames.tablebottomsimulator.genUid
+import io.github.theriverelder.minigames.tablebottomsimulator.user.Gamer
+import kotlinx.serialization.json.*
 import java.lang.System.currentTimeMillis
 import kotlin.random.Random
 
 class BirminghamGame(
     val extension: BirminghamExtension,
     val gamerAmount: Int,
-) {
+) : Persistable {
     val simulator: TableBottomSimulatorServer get() = extension.simulator
 
     val gamerList: MutableList<BirminghamGamer> = ArrayList(4)
 
+    var currentOrdinal: Int = 0
+
     fun getGamerByUserUid(uid: Int): BirminghamGamer? {
-        return gamerList.find { it.userUid == uid }
+        val gamerUid = simulator.users.values.find { it.uid == uid }?.gamer?.uid
+        return if (gamerUid == null) null else gamerList.find { it.gamer?.uid == gamerUid }
     }
 
-    var currentOrdinal: Int = 0
 
     /**
      * 0 还没开始
@@ -38,13 +43,15 @@ class BirminghamGame(
             ?: throw Exception("Cannot find user with ordinal: $currentOrdinal")
 
     fun initialize() {
+        simulator.gamers.clear()
+
         val random = Random(currentTimeMillis())
         val cardCandidates = CardSeries.SERIES["birmingham"]!!.cards
 
-        (0 until gamerAmount).forEach { index ->
-            val gamer = BirminghamGamer(this, index)
+        for (index in 0 until gamerAmount) {
+            val gamer = simulator.gamers.addRaw { Gamer(simulator, it) }
             val cardUidList = (0 until 10).map {
-                val gameObject = GameObject(simulator, simulator.genUid())
+                val gameObject = simulator.gameObjects.addRaw { GameObject(simulator, it) }
                 gameObject.size = Vector2(500.0, 702.0)
                 gameObject.position = Vector2(-100.0, -100.0)
 
@@ -55,17 +62,20 @@ class BirminghamGame(
                 gameObject.uid
             }
             gamer.cardObjectUidList = cardUidList
-            gamerList.add(gamer)
+
+            val birminghamGamer = BirminghamGamer(this, gamer.uid, index)
+            gamerList.add(birminghamGamer)
         }
-        prepareUser()
+
+        prepareUsers()
     }
 
     fun step() {
         currentOrdinal = (currentOrdinal + 1) % gamerList.size
-        prepareUser()
+        prepareUsers()
     }
 
-    fun prepareUser() {
+    fun prepareUsers() {
         for (birminghamGamer in gamerList) {
             birminghamGamer.actionGuide =
                 if (birminghamGamer.ordinal == currentOrdinal) ActionGuide(birminghamGamer) else null
@@ -78,5 +88,19 @@ class BirminghamGame(
     val listenerGameStateUpdated = ListenerManager<BirminghamGame>()
     val listenerActionOptionsUpdated = ListenerManager<BirminghamGamer>()
 
-    fun getNotOccupiedGamers(): List<BirminghamGamer> = gamerList.filter { it.userUid == null }
+    override fun save(): JsonObject = buildJsonObject {
+        put("period", period)
+        put("currentOrdinal", currentOrdinal)
+        put("gamerList", buildJsonArray { gamerList.forEach { add(it.save()) } })
+    }
+
+    override fun restore(data: JsonObject) {
+        period = data.forceGet("period").jsonPrimitive.int
+        currentOrdinal = data.forceGet("currentOrdinal").jsonPrimitive.int
+        gamerList.clear()
+        data.forceGet("gamerList").jsonArray.forEach { gamerData ->
+            gamerList.add(restoreBirminghamGamer(gamerData.jsonObject, this))
+        }
+    }
+
 }

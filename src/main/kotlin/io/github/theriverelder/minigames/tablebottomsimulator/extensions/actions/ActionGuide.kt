@@ -21,13 +21,15 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
             if (costCardObjectUid != null) simulator.gameObjects[costCardObjectUid]!!.getBehaviorByType(CardBehavior.TYPE)!!.card else null
         val action = action
         if (costCard == null) {
-            options = ActionOptions(
-                "选择一张手牌：",
-                birminghamGamer.cardObjects.map { cardObject ->
-                    val card = cardObject.getBehaviorByType(CardBehavior.TYPE)!!.card!!
-                    ActionOption(card.name) { this.costCardObjectUid = cardObject.uid }
-                }
-            )
+            options = birminghamGamer.gamer?.cardObjects?.let {
+                ActionOptions(
+                    "选择一张手牌：",
+                    it.map { cardObject ->
+                        val card = cardObject.getBehaviorByType(CardBehavior.TYPE)!!.card!!
+                        ActionOption(card.name) { this.costCardObjectUid = cardObject.uid }
+                    }
+                )
+            }
         } else if (action == null) {
             options = ActionOptions(
                 "选择以下行动之一：",

@@ -40,6 +40,8 @@ class BirminghamExtension(
 
         channel = BirminghamInstructionChannel(this)
         simulator.channels.add(channel)
+
+
     }
 
     fun createGame(gamerAmount: Int) {

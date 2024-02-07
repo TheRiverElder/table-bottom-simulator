@@ -16,8 +16,8 @@ class BirminghamInstructionChannel(val extension: BirminghamExtension) :
                 simulator.users.values.forEach(this::sendUpdateGameState)
             }
             game.listenerActionOptionsUpdated.add { gamer ->
-                println("Action options updated: ${gamer.ordinal} ${gamer.userUid}")
-                gamer.userOrNull?.run { sendDisplayActionOptions(this) }
+                println("Action options updated: ${gamer.ordinal} ${gamer.gamer?.user?.name ?: gamer.gamer?.uid}")
+                gamer.user?.run { sendDisplayActionOptions(this) }
             }
 
             simulator.users.values.forEach(this::sendUpdateGameState)
@@ -27,11 +27,11 @@ class BirminghamInstructionChannel(val extension: BirminghamExtension) :
     val game: BirminghamGame get() = extension.birminghamGame ?: throw Exception("BirminghamGame not created yet")
 
     override fun receive(data: JsonObject, sender: User) {
-        val commandType = data.forceGet("type").jsonPrimitive.content
+        val commandAction = data.forceGet("action").jsonPrimitive.content
         val commandData = data.forceGet("data").run { this as? JsonObject }
 
 
-        when (commandType) {
+        when (commandAction) {
             "request_action_options" -> sendDisplayActionOptions(sender)
             "request_game_state" -> sendUpdateGameState(sender)
             "choose_action_options" -> {
@@ -43,18 +43,16 @@ class BirminghamInstructionChannel(val extension: BirminghamExtension) :
                 val gamerAmount = commandData?.get("gamerAmount")?.jsonPrimitive?.int ?: 2
                 extension.createGame(gamerAmount)
             }
-
-            "occupy_gamer" -> {
-                if (commandData == null) throw Exception("Command data must be not null")
-                val gamerOrdinal = commandData.forceGet("gamerOrdinal").jsonPrimitive.int
-                game.gamerList[gamerOrdinal].user = sender
-                sendDisplayActionOptions(sender)
-            }
         }
     }
 
-    fun sendDisplayActionOptions(user: User) {
-        val birminghamGamer = extension.birminghamGame?.getGamerByUserUid(user.uid) ?: return
+    fun sendCommand(receiver: User, action: String, data: JsonElement = JsonNull) = send(buildJsonObject {
+        put("action", action)
+        put("data", data)
+    }, receiver)
+
+    fun sendDisplayActionOptions(receiver: User) {
+        val birminghamGamer = extension.birminghamGame?.getGamerByUserUid(receiver.uid) ?: return
 //        if (birminghamGamer == null) throw Exception("Gamer not found")
         val options = birminghamGamer.actionGuide?.options
 
@@ -72,43 +70,17 @@ class BirminghamInstructionChannel(val extension: BirminghamExtension) :
                 })
             }
 
-        val data = buildJsonObject {
-            put("type", "display_action_options")
-            put("data", commandData)
-        }
-
-        send(data, birminghamGamer.user)
+        sendCommand(receiver, "display_action_options", commandData)
     }
 
-    fun sendUpdateGameState(user: User) {
+    fun sendUpdateGameState(receiver: User) {
         val birminghamGame = extension.birminghamGame
 //        if (birminghamGamer == null) throw Exception("Gamer not found")
-        val birminghamGamer = birminghamGame?.getGamerByUserUid(user.uid)
+//        val birminghamGamer = birminghamGame?.getGamerByUserUid(user.uid)
 
-        val commandData =
-            if (birminghamGame == null) JsonNull
-            else buildJsonObject {
-                put("period", birminghamGame.period)
-                put("gamerList", buildJsonArray {
-                    birminghamGame.gamerList.forEach {
-                        add(buildJsonObject {
-                            put("ordinal", it.ordinal)
-                            put("userUid", it.userUid)
-                            put("money", it.money)
-                            put("cardAmount", it.cardObjectUidList.size)
-                            if (birminghamGamer != null && birminghamGamer.userUid == it.userUid)
-                                put("cardObjectUidList", buildJsonArray { it.cardObjectUidList.forEach { add(it) } })
-                        })
-                    }
-                })
-            }
+        val commandData = birminghamGame?.save() ?: JsonNull
 
-        val data = buildJsonObject {
-            put("type", "update_game_state")
-            put("data", commandData)
-        }
-
-        send(data, user)
+        sendCommand(receiver, "update_game_state", commandData)
     }
 
 }

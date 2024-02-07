@@ -4,7 +4,7 @@ import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.ControllerBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.initializeBasic
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamExtension
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.initializeBirmingham
+import io.github.theriverelder.minigames.tablebottomsimulator.user.User
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
@@ -64,14 +64,14 @@ fun Application.configureSockets() {
             }
 
             val user = simulator.users[userUid] ?: run {
-                close(CloseReason(200, "No user with uid: $userUid"))
-                println("Connection error: No user with uid: $userUid")
-                return@webSocket
+                val user = User(simulator, userUid)
+                simulator.users.add(user)
+                user
             }
 
             userSessions[userUid] = this@webSocket
 
-            println("User in: #${user.uid} ${user.name} ${user.color}")
+            println("User in: #${user.uid} ${user.name} ${user.gamer?.color}")
 
             simulator.channelFullUpdateChannel.sendFullUpdate(user)
 
@@ -92,7 +92,7 @@ fun Application.configureSockets() {
 
             userSessions.remove(userUid, this@webSocket)
 
-            println("User out #${user.uid} ${user.name} ${user.color}")
+            println("User out #${user.uid} ${user.name} ${user.gamer?.color}")
             println("Connection out")
         }
     }
@@ -100,11 +100,11 @@ fun Application.configureSockets() {
 
 fun initializeSimulator(): TableBottomSimulatorServer {
     val simulator = TableBottomSimulatorServer()
-    initializeBasic(simulator, 2)
+    initializeBasic(simulator)
     initializeTest(simulator)
 
     println("Valid users: ")
-    simulator.users.values.forEach { println("#${it.uid} ${it.name} ${it.color}") }
+    simulator.users.values.forEach { println("#${it.uid} ${it.name} ${it.gamer?.color}") }
 
     return simulator
 }

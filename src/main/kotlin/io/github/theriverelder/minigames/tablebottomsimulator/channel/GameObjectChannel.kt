@@ -7,7 +7,7 @@ import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObj
 import io.github.theriverelder.minigames.tablebottomsimulator.user.User
 import kotlinx.serialization.json.*
 
-class IncrementalUpdateChannel(name: String, simulator: TableBottomSimulatorServer) : Channel(name, simulator) {
+class GameObjectChannel(simulator: TableBottomSimulatorServer) : Channel("game_object", simulator) {
 
     companion object {
         const val UPDATE_GAME_OBJECT_FULL = "update_game_object_full"
@@ -20,34 +20,34 @@ class IncrementalUpdateChannel(name: String, simulator: TableBottomSimulatorServ
 
     // 广播，发送GameObject的几何数据以及Behavior数据，接收者若无对应UID的GameObject则创建
     fun sendUpdateGameObjectFull(obj: GameObject) = broadcast(buildJsonObject {
-        put("action", JsonPrimitive(UPDATE_GAME_OBJECT_FULL))
+        put("action", UPDATE_GAME_OBJECT_FULL)
         put("gameObject", obj.save())
     })
 
     // 广播，只发送GameObject的几何数据，不包括Behavior数据，接收者若无对应UID的GameObject也不创建
     fun sendUpdateGameObjectSelf(obj: GameObject) = broadcast(buildJsonObject {
-        put("action", JsonPrimitive(UPDATE_GAME_OBJECT_SELF))
+        put("action", UPDATE_GAME_OBJECT_SELF)
         put("gameObject", obj.saveSelf())
     })
 
     // 广播，移除GameObject
     fun sendRemoveGameObject(obj: GameObject) = broadcast(buildJsonObject {
-        put("action", JsonPrimitive(REMOVE_GAME_OBJECT))
-        put("uid", JsonPrimitive(obj.uid))
+        put("action", REMOVE_GAME_OBJECT)
+        put("uid", obj.uid)
     })
 
     // 广播，发送Behavior数据，接收者若无对应UID的Behavior则创建
     fun sendUpdateBehavior(behavior: Behavior<*>) = broadcast(buildJsonObject {
-        put("action", JsonPrimitive(UPDATE_BEHAVIOR))
-        put("hostUid", JsonPrimitive(behavior.host.uid))
+        put("action", UPDATE_BEHAVIOR)
+        put("hostUid", behavior.host.uid)
         put("behavior", behavior.save())
     })
 
     // 广播，移除Behavior
     fun sendRemoveBehavior(behavior: Behavior<*>) = broadcast(buildJsonObject {
-        put("action", JsonPrimitive(REMOVE_BEHAVIOR))
-        put("hostUid", JsonPrimitive(behavior.host.uid))
-        put("behaviorUid", JsonPrimitive(behavior.uid))
+        put("action", REMOVE_BEHAVIOR)
+        put("hostUid", behavior.host.uid)
+        put("behaviorUid", behavior.uid)
     })
 
 

@@ -36,7 +36,7 @@ class EditChannel(name: String, simulator: TableBottomSimulatorServer) : Channel
         gameObject.size = Vector2(100.0, 100.0)
         gameObject.createAndAddBehavior(ControllerBehavior.TYPE)
 
-        simulator.channelIncrementalUpdate.sendUpdateGameObjectFull(gameObject)
+        simulator.channelGameObject.sendUpdateGameObjectFull(gameObject)
     }
 
     private fun receivePasteGameObject(data: JsonObject) {
@@ -49,7 +49,7 @@ class EditChannel(name: String, simulator: TableBottomSimulatorServer) : Channel
         gameObject.restore(gameObjectData)
         if (position != null) gameObject.position = position
 
-        simulator.channelIncrementalUpdate.sendUpdateGameObjectFull(gameObject)
+        simulator.channelGameObject.sendUpdateGameObjectFull(gameObject)
     }
 
     private fun receiveCreateBehavior(data: JsonObject) {
@@ -59,7 +59,7 @@ class EditChannel(name: String, simulator: TableBottomSimulatorServer) : Channel
         val type = simulator.behaviorTypes[typeName] ?: throw Exception("No behavior type: $typeName")
         val behavior = gameObject.createAndAddBehavior(type)
 
-        simulator.channelIncrementalUpdate.sendUpdateBehavior(behavior)
+        simulator.channelGameObject.sendUpdateBehavior(behavior)
     }
 
 

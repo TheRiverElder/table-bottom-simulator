@@ -14,7 +14,8 @@ import io.github.theriverelder.minigames.tablebottomsimulator.user.User
 import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2
 import kotlinx.serialization.json.*
 
-class ControllerBehavior(type: BehaviorType<ControllerBehavior>, host: GameObject, uid: Int) : BehaviorAdaptor<ControllerBehavior>(type, host, uid) {
+class ControllerBehavior(type: BehaviorType<ControllerBehavior>, host: GameObject, uid: Int) :
+    BehaviorAdaptor<ControllerBehavior>(type, host, uid) {
 
     val onDragStartListeners = ListenerManager<PointerEvent>()
     val onDragMoveListeners = ListenerManager<PointerEvent>()
@@ -30,17 +31,17 @@ class ControllerBehavior(type: BehaviorType<ControllerBehavior>, host: GameObjec
         onDragEndListeners.add(onDragEnd)
     }
 
-    private val onDragStart = { event: PointerEvent ->
+    private val onDragStart: (PointerEvent) -> Unit = { event ->
         this.controller = event.controller
         sendUpdate()
     }
 
-    private val onDragMove = { event: PointerEvent ->
+    private val onDragMove: (PointerEvent) -> Unit = { event ->
         host.position = event.position
         host.sendUpdateSelf()
     }
 
-    private val onDragEnd = { _: PointerEvent ->
+    private val onDragEnd: (PointerEvent) -> Unit = { _: PointerEvent ->
         this.controller = null
         sendUpdate()
         val pile = simulator.gameObjects.values.find { host.position in AABBArea(it.position, it.size) }

@@ -1,6 +1,6 @@
 package io.github.theriverelder.minigames.lib.management
 
-class ObservableRegistry<K, V>(getKey: (V) -> K) : Registry<K, V>(getKey) {
+open class ObservableRegistry<K, V>(getKey: (V) -> K) : Registry<K, V>(getKey) {
 
     val onAdd = ListenerManager<V>()
     val onRemove = ListenerManager<V>()

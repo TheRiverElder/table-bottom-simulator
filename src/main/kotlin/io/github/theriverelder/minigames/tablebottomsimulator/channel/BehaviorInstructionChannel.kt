@@ -6,7 +6,7 @@ import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.Behavio
 import io.github.theriverelder.minigames.tablebottomsimulator.user.User
 import kotlinx.serialization.json.*
 
-class BehaviorInstructionChannel(name: String, simulator: TableBottomSimulatorServer) : Channel(name, simulator) {
+class BehaviorInstructionChannel(simulator: TableBottomSimulatorServer) : Channel("behavior_instruction", simulator) {
 
     override fun receive(data: JsonObject, sender: User) {
         val hostUid = data.forceGet("hostUid").jsonPrimitive.int
@@ -16,7 +16,7 @@ class BehaviorInstructionChannel(name: String, simulator: TableBottomSimulatorSe
         val behavior = simulator.gameObjects[hostUid]?.behaviors?.get(behaviorUid) ?: return
 
         behavior.receiveInstruction(instruction, sender)
-        simulator.channelIncrementalUpdate.sendUpdateBehavior(behavior)
+        simulator.channelGameObject.sendUpdateBehavior(behavior)
     }
 
     fun sendInstruction(behavior: Behavior<*>, instruction: JsonObject, receivers: Collection<User>? = null) {
