@@ -1,16 +1,20 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.user
 
+import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObject
+import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2
+import io.github.theriverelder.minigames.tablebottomsimulator.util.save
 import kotlinx.serialization.json.*
 
 class Gamer(
     val simulator: TableBottomSimulatorServer,
     val uid: Int,
+    var home: Vector2 = Vector2.zero(),
     var userUid: Int? = null,
     var color: String = "white",
     var cardObjectUidList: List<Int> = emptyList(),
@@ -30,12 +34,14 @@ class Gamer(
 
     override fun save(): JsonObject = buildJsonObject {
         put("uid", uid)
+        put("home", home.save())
         put("userUid", userUid)
         put("color", color)
         put("cardObjectUidList", buildJsonArray { cardObjectUidList.forEach { add(it) } })
     }
 
     override fun restore(data: JsonObject) {
+        home = restoreVector2(data.forceGet("home").jsonObject)
         userUid = data.forceGet("userUid").jsonPrimitive.int
         color = data.forceGet("color").jsonPrimitive.content
         cardObjectUidList = data["cardObjectUidList"]?.jsonArray?.map { it.jsonPrimitive.int } ?: emptyList()
@@ -44,6 +50,7 @@ class Gamer(
     // 提取信息，只有自己可以看到自己的手牌
     fun extractData(user: User): JsonObject = buildJsonObject {
         put("uid", uid)
+        put("home", home.save())
         put("userUid", userUid)
         put("color", color)
         put("cardAmount", cardObjectUidList.size)
