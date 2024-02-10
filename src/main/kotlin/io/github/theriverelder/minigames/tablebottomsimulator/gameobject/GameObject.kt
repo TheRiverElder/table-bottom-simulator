@@ -94,4 +94,6 @@ open class GameObject(
             tags.add(tag)
         }
     }
+
+    override fun hashCode(): Int = uid
 }

@@ -5,6 +5,7 @@ import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardSeries
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.ActionGuide
@@ -23,6 +24,8 @@ class BirminghamGame(
     val gamerList: MutableList<BirminghamGamer> = ArrayList(4)
 
     var currentOrdinal: Int = 0
+
+    var cardGameObjectUidList = emptyList<Int>()
 
     fun getGamerByUserUid(uid: Int): BirminghamGamer? {
         val gamerUid = simulator.users.values.find { it.uid == uid }?.gamer?.uid
@@ -46,31 +49,37 @@ class BirminghamGame(
         simulator.gamers.clear()
 
         val random = Random(currentTimeMillis())
-        val cardCandidates = CardSeries.SERIES["birmingham"]!!.cards
+        val cardSeries = CardSeries.SERIES["birmingham"]!!
+        val cardCandidates = cardSeries.cards
 
+        // 根据人数生成对应数量的牌组
+        var cardGameObjectUidList = CARD_SET_BY_PLAYER_AMOUNT.flatMap<Pair<String, List<Int>>, Int> { data ->
+            val cardName = data.first
+            val amount = data.second[gamerAmount - 2]
+            val card = cardSeries.cards[cardName]!!
+            buildList(amount) {
+                val gameObject = simulator.gameObjects.addRaw { GameObject(simulator, it) }
+                gameObject.card = card
+                gameObject.size = Vector2(500.0, 702.0)
+                gameObject.shape = "rectangle"
+                gameObject.uid
+            }
+        }.shuffled()
+
+        // 分牌
+        val cardAmount = ROUNDS_OF_EACH_ERA_BY_PLAYER_AMOUNT.get(gamerAmount - 2)
         for (index in 0 until gamerAmount) {
 //            println("gamer ${index}")
             val gamer = simulator.gamers.addRaw { Gamer(simulator, it) }
             gamer.home = Vector2(3000.0, -3000.0 + 1000 * index)
-            val cardUidList = (0 until 6).map { i ->
-//                println("card ${i} of ${index}")
-                val gameObject = simulator.gameObjects.addRaw { GameObject(simulator, it) }
-                gameObject.size = Vector2(500.0, 702.0)
-                gameObject.shape = "rectangle"
-                gameObject.position = gamer.home + Vector2(300.0 * i, 0.0)
-
-                val cardBehavior = gameObject.createAndAddBehavior(CardBehavior.TYPE)
-                cardBehavior.card = cardCandidates[CARD_NAMES[random.nextInt(0, cardCandidates.size)]]
-
-                gameObject.sendUpdateFull()
-//                println(gameObject.uid)
-                gameObject.uid
-            }
-            gamer.cardObjectUidList = cardUidList
+            gamer.cardObjectUidList = cardGameObjectUidList.take(cardAmount)
+            cardGameObjectUidList = cardGameObjectUidList.drop(cardAmount)
 
             val birminghamGamer = BirminghamGamer(this, gamer.uid, index)
+            birminghamGamer.initialize()
             gamerList.add(birminghamGamer)
         }
+        this.cardGameObjectUidList = cardGameObjectUidList
 
         prepareUsers()
     }
@@ -109,3 +118,46 @@ class BirminghamGame(
     }
 
 }
+
+var GameObject.card: Card
+    get() = getBehaviorByType(CardBehavior.TYPE)!!.card!!
+    set(value) {
+        val behavior = getBehaviorByType(CardBehavior.TYPE) ?: createAndAddBehavior(CardBehavior.TYPE)
+        behavior.card = value
+    }
+
+val CARD_SET_BY_PLAYER_AMOUNT = listOf(
+    // 青色
+    "belper" to listOf(0, 0, 2),
+    "derby" to listOf(0, 0, 3),
+    // 蓝色
+    "leek" to listOf(0, 2, 2),
+    "stroke_on_trent" to listOf(0, 3, 3),
+    "stone" to listOf(0, 2, 2),
+    "uttoxeter" to listOf(0, 1, 2),
+    // 红色
+    "stafford" to listOf(2, 2, 2),
+    "burton_on_trent" to listOf(2, 2, 2),
+    "cannock" to listOf(2, 2, 2),
+    "tamworth" to listOf(1, 1, 1),
+    "walsall" to listOf(1, 1, 1),
+    // 黄色
+    "coalbrookdale" to listOf(3, 3, 3),
+    "dudley" to listOf(2, 2, 2),
+    "kidderminster" to listOf(2, 2, 2),
+    "wolverhampton" to listOf(2, 2, 2),
+    "worcester" to listOf(2, 2, 2),
+    // 紫色
+    "birmingham" to listOf(3, 3, 3),
+    "coventry" to listOf(3, 3, 3),
+    "nuneaton" to listOf(1, 1, 1),
+    "redditch" to listOf(1, 1, 1),
+    // 产业牌
+    "iron_works" to listOf(4, 4, 4),
+    "coal_mine" to listOf(2, 2, 3),
+    "cotton_or_manufacturer" to listOf(0, 6, 8),
+    "pottery" to listOf(2, 2, 3),
+    "brewery" to listOf(5, 5, 5),
+)
+
+val ROUNDS_OF_EACH_ERA_BY_PLAYER_AMOUNT = listOf(10, 9, 8)
