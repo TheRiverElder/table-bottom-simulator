@@ -8,6 +8,8 @@ class Vector2(
     val y: Double,
 ) {
 
+    constructor(x: Number, y: Number) : this(x.toDouble(), y.toDouble())
+
     operator fun unaryPlus() = Vector2(x, y)
     operator fun unaryMinus() = Vector2(-x, -y)
     operator fun plus(other: Vector2) = Vector2(x + other.x, y + other.y)

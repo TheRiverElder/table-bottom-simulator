@@ -16,13 +16,14 @@ val CARD_NAMES = listOf(
     "belper",
     "birmingham",
     "brewery",
-    "burton_upon_trent",
+    "burton_on_trent",
     "cannock",
     "coal_mine",
     "coalbrookdale",
     "coventry",
-    "cutton_mill_manufacturer",
+    "cotton_or_manufacturer",
     "derby",
+    "dudley",
     "iron_works",
     "kidderminster",
     "leek",
@@ -44,7 +45,7 @@ val CARD_NAMES = listOf(
 
 fun createAndAddCard(series: CardSeries, names: Collection<String>) {
     for (name in names) {
-        val face = "http://localhost:8089/minigames/birmingham/image/common/cards/${name}.jpg"
+        val face = "http://localhost:8089/minigames/birmingham/image/cards/${name}.jpg"
         val card = Card(name, series, face)
         series.cards.add(card)
     }

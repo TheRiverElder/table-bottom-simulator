@@ -49,19 +49,20 @@ class BirminghamGame(
         simulator.gamers.clear()
 
         val random = Random(currentTimeMillis())
-        val cardSeries = CardSeries.SERIES["birmingham"]!!
-        val cardCandidates = cardSeries.cards
+        val cardSeries =  extension.cardSeriesCard
 
         // 根据人数生成对应数量的牌组
         var cardGameObjectUidList = CARD_SET_BY_PLAYER_AMOUNT.flatMap<Pair<String, List<Int>>, Int> { data ->
             val cardName = data.first
             val amount = data.second[gamerAmount - 2]
+//            println("Card: ${cardName}")
             val card = cardSeries.cards[cardName]!!
             buildList(amount) {
                 val gameObject = simulator.gameObjects.addRaw { GameObject(simulator, it) }
                 gameObject.card = card
                 gameObject.size = Vector2(500.0, 702.0)
                 gameObject.shape = "rectangle"
+                gameObject.sendUpdateSelf()
                 gameObject.uid
             }
         }.shuffled()
@@ -71,7 +72,7 @@ class BirminghamGame(
         for (index in 0 until gamerAmount) {
 //            println("gamer ${index}")
             val gamer = simulator.gamers.addRaw { Gamer(simulator, it) }
-            gamer.home = Vector2(3000.0, -3000.0 + 1000 * index)
+            gamer.home = Vector2(3000.0, -3000.0 + 1200 * index)
             gamer.cardObjectUidList = cardGameObjectUidList.take(cardAmount)
             cardGameObjectUidList = cardGameObjectUidList.drop(cardAmount)
 
@@ -132,7 +133,7 @@ val CARD_SET_BY_PLAYER_AMOUNT = listOf(
     "derby" to listOf(0, 0, 3),
     // 蓝色
     "leek" to listOf(0, 2, 2),
-    "stroke_on_trent" to listOf(0, 3, 3),
+    "stoke_on_trent" to listOf(0, 3, 3),
     "stone" to listOf(0, 2, 2),
     "uttoxeter" to listOf(0, 1, 2),
     // 红色

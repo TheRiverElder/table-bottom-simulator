@@ -29,7 +29,7 @@ class CardBehavior(type: BehaviorType<CardBehavior>, host: GameObject, uid: Int)
     fun refreshHost() {
         val card = card
         if (card != null) {
-            this.host.background = if (!flipped) card.face else card.series.back
+            this.host.background = if (!flipped) card.face else card.back
             this.host.sendUpdateSelf()
         }
     }
@@ -71,12 +71,15 @@ data class Card (
     val name: String,
     val series: CardSeries,
     val face: String,
+    val cardBack: String? = null, // 为null则代表用series.back
 ) : Persistable {
     override fun save(): JsonObject = buildJsonObject {
         put("name", name)
         put("seriesName", series.name)
         put("face", face)
     }
+
+    val back: String get() = cardBack ?: series.back
 
     override fun restore(data: JsonObject) { }
 
