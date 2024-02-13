@@ -13,6 +13,7 @@ import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObj
 import io.github.theriverelder.minigames.tablebottomsimulator.user.Gamer
 import kotlinx.serialization.json.*
 import java.lang.System.currentTimeMillis
+import kotlin.math.PI
 import kotlin.random.Random
 
 class BirminghamGame(
@@ -66,7 +67,8 @@ class BirminghamGame(
             buildList(amount) {
                 repeat(amount) {
                     val gameObject = simulator.gameObjects.addRaw { GameObject(simulator, it) }
-                    gameObject.position = Vector2(-2000, -2000)
+                    gameObject.position = Vector2(-1474, -1370)
+                    gameObject.rotation = PI / 2
                     gameObject.card = card
                     gameObject.size = Vector2(500.0, 702.0)
                     gameObject.shape = "rectangle"

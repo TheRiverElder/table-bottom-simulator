@@ -54,6 +54,7 @@ class BirminghamGamer(
 
         gamer.cardObjects.forEachIndexed { index, gameObject ->
             gameObject.position = cardAreaAnchor + Vector2(index * 550, 0)
+            gameObject.rotation = 0.0
             gameObject.sendUpdateSelf()
         }
 

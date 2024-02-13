@@ -69,13 +69,13 @@ class BirminghamExtension(
         mapObject.background = "http://localhost:8089/minigames/birmingham/image/common/map.jpg"
         mapObject.shape = "rectangle"
 
-        // 测试卡牌
-        val cardGameObject = simulator.createAndAddGameObject()
-        cardGameObject.shape = "rectangle"
-        cardGameObject.size = Vector2(500.0, 702.0)
-        val cardBehavior = cardGameObject.createAndAddBehavior(CardBehavior.TYPE)
-        cardBehavior.series = cardSeriesCard
-        cardBehavior.card = cardSeriesCard.cards["birmingham"]
+//        // 测试卡牌
+//        val cardGameObject = simulator.createAndAddGameObject()
+//        cardGameObject.shape = "rectangle"
+//        cardGameObject.size = Vector2(500.0, 702.0)
+//        val cardBehavior = cardGameObject.createAndAddBehavior(CardBehavior.TYPE)
+//        cardBehavior.series = cardSeriesCard
+//        cardBehavior.card = cardSeriesCard.cards["birmingham"]
 
         channel = BirminghamInstructionChannel(this)
         simulator.channels.add(channel)
