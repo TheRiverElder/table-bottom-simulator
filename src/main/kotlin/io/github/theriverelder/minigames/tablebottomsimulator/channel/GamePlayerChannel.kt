@@ -28,11 +28,6 @@ class GamePlayerChannel(simulator: TableBottomSimulatorServer) : Channel("game_p
         }
     }
 
-    fun sendCommand(receiver: User, action: String, data: JsonElement = JsonNull) = send(buildJsonObject {
-        put("action", action)
-        put("data", data)
-    }, receiver)
-
     fun sendGamers(receiver: User) {
         sendCommand(
             receiver,

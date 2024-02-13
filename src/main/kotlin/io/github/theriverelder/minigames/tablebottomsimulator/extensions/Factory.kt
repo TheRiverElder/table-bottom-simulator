@@ -38,7 +38,7 @@ var GameObject.factory: Factory
 val FACTORY_SET = listOf(
     "brewery" to listOf(2, 2, 2, 1),
     "manufacturer" to listOf(1, 2, 1, 1, 2, 1, 1, 2),
-    "cotton" to listOf(3, 2, 3, 3),
+    "cotton_mill" to listOf(3, 2, 3, 3),
     "pottery" to listOf(1, 1, 1, 1, 1),
     "iron_works" to listOf(1, 1, 1, 1),
     "coal_mine" to listOf(1, 2, 2, 2),

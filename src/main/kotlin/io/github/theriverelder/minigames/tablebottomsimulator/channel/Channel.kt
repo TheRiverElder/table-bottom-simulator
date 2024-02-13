@@ -1,14 +1,10 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.channel
 
-import io.github.theriverelder.minigames.tablebottomsimulator.user.Gamer
 import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.user.User
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.*
 
 abstract class Channel(
     val name: String,
@@ -34,4 +30,13 @@ abstract class Channel(
     fun broadcast(data: JsonObject, excepts: Set<User> = emptySet()) {
         send(data, simulator.users.values.filter { it !in excepts }.toList())
     }
+}
+
+fun Channel.sendCommand(receiver: User? = null, action: String, data: JsonElement = JsonNull) {
+    val pack = buildJsonObject {
+        put("action", action)
+        put("data", data)
+    }
+    if (receiver == null) broadcast(pack)
+    else send(pack, receiver)
 }

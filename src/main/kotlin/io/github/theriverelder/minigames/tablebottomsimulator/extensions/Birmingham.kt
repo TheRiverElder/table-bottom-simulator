@@ -21,7 +21,7 @@ val CARD_NAMES = listOf(
     "coal_mine",
     "coalbrookdale",
     "coventry",
-    "cotton_or_manufacturer",
+    "cotton_mill_or_manufacturer",
     "derby",
     "dudley",
     "iron_works",
@@ -42,11 +42,3 @@ val CARD_NAMES = listOf(
     "wolverhampton",
     "worcester",
 )
-
-fun createAndAddCard(series: CardSeries, names: Collection<String>) {
-    for (name in names) {
-        val face = "http://localhost:8089/minigames/birmingham/image/cards/${name}.jpg"
-        val card = Card(name, series, face)
-        series.cards.add(card)
-    }
-}

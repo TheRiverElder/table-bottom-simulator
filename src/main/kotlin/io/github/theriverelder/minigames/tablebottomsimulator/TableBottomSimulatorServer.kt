@@ -3,6 +3,7 @@ package io.github.theriverelder.minigames.tablebottomsimulator
 import io.github.theriverelder.minigames.lib.management.AutoIncrementObservableRegistry
 import io.github.theriverelder.minigames.lib.management.ObservableRegistry
 import io.github.theriverelder.minigames.lib.management.Registry
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.channel.*
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.BehaviorType
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObject
@@ -23,12 +24,14 @@ class TableBottomSimulatorServer {
     val channelFullUpdateChannel = FullUpdateChannel("full_update", this)
     val channelGameObject = GameObjectChannel(this)
     val channelGamePlayer = GamePlayerChannel(this)
+    val channelCard = CardChannel(this)
     val channelBehaviorInstruction = BehaviorInstructionChannel(this)
 
     init {
         channels.add(channelFullUpdateChannel)
         channels.add(channelGameObject)
         channels.add(channelGamePlayer)
+        channels.add(channelCard)
         channels.add(channelBehaviorInstruction)
 
         gameObjects.onAdd.add { channelGameObject.sendUpdateGameObjectFull(it) }

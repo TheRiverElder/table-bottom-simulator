@@ -8,6 +8,7 @@ import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.Behavio
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.BehaviorType
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObject
 import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.Side
+import io.github.theriverelder.minigames.tablebottomsimulator.save
 import kotlinx.serialization.json.*
 
 class CardBehavior(type: BehaviorType<CardBehavior>, host: GameObject, uid: Int) :
@@ -57,7 +58,7 @@ class CardBehavior(type: BehaviorType<CardBehavior>, host: GameObject, uid: Int)
 class CardSeries(
     val name: String,
     val back: String,
-) {
+) : Persistable {
 
     val cards = Registry(Card::name);
 
@@ -65,6 +66,26 @@ class CardSeries(
         val SERIES = Registry(CardSeries::name)
     }
 
+    override fun save(): JsonObject = buildJsonObject {
+        put("name", name)
+        put("back", back)
+        put("cards", cards.values.save())
+    }
+
+    override fun restore(data: JsonObject) {
+        cards.clear()
+        data.forceGet("cards").jsonArray.forEach { cards.add(restoreCard(it.jsonObject, this)) }
+    }
+
+}
+
+fun restoreCardSeries(data: JsonObject): CardSeries {
+    val series = CardSeries(
+        data.forceGet("name").jsonPrimitive.content,
+        data.forceGet("back").jsonPrimitive.contentOrNull ?: "",
+    )
+    series.restore(data)
+    return series
 }
 
 data class Card (
@@ -77,10 +98,22 @@ data class Card (
         put("name", name)
         put("seriesName", series.name)
         put("face", face)
+        put("cardBack", cardBack)
     }
 
     val back: String get() = cardBack ?: series.back
 
     override fun restore(data: JsonObject) { }
 
+}
+
+fun restoreCard(data: JsonObject, series: CardSeries? = null): Card {
+    val card = Card(
+        data.forceGet("name").jsonPrimitive.content,
+        series ?: CardSeries.SERIES.getOrThrow(data.forceGet("seriesName").jsonPrimitive.content),
+        data.forceGet("face").jsonPrimitive.content,
+        data.forceGet("cardBack").jsonPrimitive.contentOrNull,
+    )
+    card.restore(data)
+    return card
 }

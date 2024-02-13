@@ -4,12 +4,9 @@ import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.ActionGuide
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObject
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObjectTag
 import io.github.theriverelder.minigames.tablebottomsimulator.user.Gamer
 import io.github.theriverelder.minigames.tablebottomsimulator.user.User
 import kotlinx.serialization.json.*
-import java.util.concurrent.atomic.AtomicInteger
 
 class BirminghamGamer(
     val game: BirminghamGame,
@@ -51,10 +48,19 @@ class BirminghamGamer(
         // 初始化玩家的工厂指示物
         // 找不到规则书，就先这么写代替一下罢
 
-        val areaAnchor = gamer!!.home + Vector2(500, 0)
+        val gamer = gamer!!
+
+        val cardAreaAnchor = gamer.home
+
+        gamer.cardObjects.forEachIndexed { index, gameObject ->
+            gameObject.position = cardAreaAnchor + Vector2(index * 550, 0)
+            gameObject.sendUpdateSelf()
+        }
+
+        val factoryPreparingAreaAnchor = gamer.home + Vector2(0, 800)
 
         factoryObjectUidStacks.clear()
-        FACTORY_SET.forEachIndexed() { typeIndex, pair ->
+        FACTORY_SET.forEachIndexed { typeIndex, pair ->
             val typeName = pair.first
             val levels = pair.second
 
@@ -62,11 +68,14 @@ class BirminghamGamer(
                 buildList<Int>(amountOfLevel) {
                     val obj = game.simulator.createAndAddGameObject()
                     obj.factory = Factory(typeName, level)
-                    val card = game.extension.cardSeriesFactory.cards["${typeName}_level_${level.toString().padStart(2, '0')}"]!!
+                    val card = game.extension.cardSeriesFactory.cards["${gamer.color}_${typeName}_level_${(level).toString().padStart(2, '0')}"]!!
                     obj.card = card
-                    obj.position = areaAnchor + Vector2(level * 250, typeIndex * 250)
+                    obj.position = factoryPreparingAreaAnchor + Vector2(level * 250, typeIndex * 250)
                     obj.size = Vector2(238, 238)
                     obj.shape = "rectangle"
+
+                    obj.sendUpdateFull()
+
                     obj.uid
                 }
             }

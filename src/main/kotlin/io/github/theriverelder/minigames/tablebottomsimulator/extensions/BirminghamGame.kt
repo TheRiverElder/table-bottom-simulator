@@ -51,32 +51,50 @@ class BirminghamGame(
         val random = Random(currentTimeMillis())
         val cardSeries =  extension.cardSeriesCard
 
+        println("Initializing game: $gamerAmount gamers")
+
         // 根据人数生成对应数量的牌组
-        var cardGameObjectUidList = CARD_SET_BY_PLAYER_AMOUNT.flatMap<Pair<String, List<Int>>, Int> { data ->
+        var cardGameObjectUidList = CARD_SET_BY_PLAYER_AMOUNT.flatMap { data ->
             val cardName = data.first
             val amount = data.second[gamerAmount - 2]
-//            println("Card: ${cardName}")
+
+            println("Create card game objects: ${cardName}, at amount $amount")
+
+            if (amount <= 0) return@flatMap emptyList<Int>()
+
             val card = cardSeries.cards[cardName]!!
             buildList(amount) {
-                val gameObject = simulator.gameObjects.addRaw { GameObject(simulator, it) }
-                gameObject.card = card
-                gameObject.size = Vector2(500.0, 702.0)
-                gameObject.shape = "rectangle"
-                gameObject.sendUpdateSelf()
-                gameObject.uid
+                repeat(amount) {
+                    val gameObject = simulator.gameObjects.addRaw { GameObject(simulator, it) }
+                    gameObject.position = Vector2(-2000, -2000)
+                    gameObject.card = card
+                    gameObject.size = Vector2(500.0, 702.0)
+                    gameObject.shape = "rectangle"
+                    gameObject.sendUpdateFull()
+                    add(gameObject.uid)
+                }
             }
-        }.shuffled()
+        }.shuffled(random)
+
+        println("Create card set: ${cardGameObjectUidList.size} cards")
 
         // 分牌
-        val cardAmount = ROUNDS_OF_EACH_ERA_BY_PLAYER_AMOUNT.get(gamerAmount - 2)
-        for (index in 0 until gamerAmount) {
+        val cardAmount = ROUNDS_OF_EACH_ERA_BY_PLAYER_AMOUNT[gamerAmount - 2]
+        for (ordinal in 0 until gamerAmount) {
 //            println("gamer ${index}")
             val gamer = simulator.gamers.addRaw { Gamer(simulator, it) }
-            gamer.home = Vector2(3000.0, -3000.0 + 1200 * index)
+            gamer.color = GAMER_COLORS[ordinal]
+            gamer.home = when (ordinal) {
+                0 -> Vector2(3000, -3000)
+                1 -> Vector2(3000, 0)
+                2 -> Vector2(-3000, -3000)
+                3 -> Vector2(-3000, 0)
+                else -> Vector2(5000, 5000)
+            }
             gamer.cardObjectUidList = cardGameObjectUidList.take(cardAmount)
             cardGameObjectUidList = cardGameObjectUidList.drop(cardAmount)
 
-            val birminghamGamer = BirminghamGamer(this, gamer.uid, index)
+            val birminghamGamer = BirminghamGamer(this, gamer.uid, ordinal)
             birminghamGamer.initialize()
             gamerList.add(birminghamGamer)
         }
@@ -156,7 +174,7 @@ val CARD_SET_BY_PLAYER_AMOUNT = listOf(
     // 产业牌
     "iron_works" to listOf(4, 4, 4),
     "coal_mine" to listOf(2, 2, 3),
-    "cotton_or_manufacturer" to listOf(0, 6, 8),
+    "cotton_mill_or_manufacturer" to listOf(0, 6, 8),
     "pottery" to listOf(2, 2, 3),
     "brewery" to listOf(5, 5, 5),
 )

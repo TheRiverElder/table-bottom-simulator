@@ -25,30 +25,42 @@ class BirminghamExtension(
 
     init {
         run {
+            val prefix = "http://localhost:8089/minigames/birmingham/image/common/cards/"
             val cardSeries =
-                CardSeries("birmingham_card", "http://localhost:8089/minigames/birmingham/image/card/card_back.jpg")
-            createAndAddCard(cardSeries, CARD_NAMES)
+                CardSeries("birmingham_card", prefix + "card_back.jpg")
+
+            for (name in CARD_NAMES) {
+                cardSeries.cards.add(Card(name, cardSeries,  prefix + "${name}.jpg"))
+            }
             CardSeries.SERIES.add(cardSeries)
             cardSeriesCard = cardSeries
         }
         run {
+            val prefix = "http://localhost:8089/minigames/birmingham/image/gamers/"
             val cardSeries = CardSeries("birmingham_factory", "")
-            FACTORY_SET.forEach { data ->
-                val typeName = data.first
-                repeat(data.second.size) { level ->
-                    val cardName = "${typeName}_level_${level.toString().padStart(2, '0')}"
-                    val card = Card(
-                        cardName,
-                        cardSeries,
-                        "http://localhost:8089/minigames/birmingham/image/factory/${cardName}_face.jpg",
-                        "http://localhost:8089/minigames/birmingham/image/factory/${cardName}_back.jpg",
-                    )
-                    cardSeries.cards.add(card)
+            GAMER_COLORS.forEach { gamerColor ->
+                FACTORY_SET.forEach { data ->
+                    val typeName = data.first
+                    repeat(data.second.size) { level ->
+                        val subName = "${typeName}_level_${level.toString().padStart(2, '0')}"
+                        val cardName = "${gamerColor}_${subName}"
+                        val fileName = "${typeName}_level_${(level + 1).toString().padStart(2, '0')}"
+//                        println(fileName)
+                        val card = Card(
+                            cardName,
+                            cardSeries,
+                            prefix + "${gamerColor}/${fileName}_face.jpg",
+                            prefix + "${gamerColor}/${fileName}_back.jpg",
+                        )
+                        cardSeries.cards.add(card)
+                    }
                 }
             }
             CardSeries.SERIES.add(cardSeries)
             cardSeriesFactory = cardSeries
         }
+
+        simulator.channelCard.sendCardSerieses()
 
         // 主要桌布
         val mapObject = simulator.createAndAddGameObject()
@@ -78,3 +90,10 @@ class BirminghamExtension(
         listenerGameCreated.emit(birminghamGame)
     }
 }
+
+val GAMER_COLORS = listOf(
+    "orange",
+    "yellow",
+    "teal",
+    "purple",
+)
