@@ -48,18 +48,47 @@ class Gamer(
     }
 
     // 提取信息，只有自己可以看到自己的手牌
-    fun extractData(user: User): JsonObject = buildJsonObject {
+    fun extractData(user: User? = null): JsonObject = buildJsonObject {
         put("uid", uid)
         put("home", home.save())
         put("userUid", userUid)
         put("color", color)
         put("cardAmount", cardObjectUidList.size)
-        if (userUid == user.uid) put("cardObjectUidList", buildJsonArray { cardObjectUidList.forEach { add(it) } })
+        if (user != null && userUid == user.uid) put(
+            "cardObjectUidList",
+            buildJsonArray { cardObjectUidList.forEach { add(it) } })
     }
 
-    val cards: List<Card> get() = cardObjects.map { it.getBehaviorByType(CardBehavior.TYPE)!!.card!! }
+     val cards: List<Card> get() = cardObjects.map { it.getBehaviorByType(CardBehavior.TYPE)!!.card!! }
 
     val cardObjects: List<GameObject> get() = cardObjectUidList.map { simulator.gameObjects[it]!! }
+
+    fun removeCardFromHand(vararg targetUidList: Int) {
+        var removed = false
+        val newList = arrayListOf<Int>()
+        for (uid in targetUidList) {
+            if (targetUidList.contains(uid)) {
+                removed = true
+                continue
+            }
+            newList += uid
+        }
+        if (removed) {
+            cardObjectUidList = newList.toList()
+            simulator.channelGamePlayer.sendGamers()
+        }
+    }
+
+    fun addCardToHand(vararg targetUidList: Int) {
+        var added = false
+        for (uid in targetUidList) {
+            if (!cardObjectUidList.contains(uid)) {
+                cardObjectUidList += uid
+                added = true
+            }
+        }
+        if (added) simulator.channelGamePlayer.sendGamers()
+    }
 }
 
 fun restoreGamer(data: JsonObject, simulator: TableBottomSimulatorServer): Gamer {

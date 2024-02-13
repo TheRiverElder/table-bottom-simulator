@@ -5,7 +5,7 @@ import io.github.theriverelder.minigames.tablebottomsimulator.extensions.Birming
 
 class LoanAction(val birminghamGamer: BirminghamGamer, costCard: Card) : ActionBase(birminghamGamer.user!!, costCard) {
 
-    override val options: ActionOptions get() = ActionOptions("确认耻辱贷款", listOf(ActionOption("确认", { })))
+    override val options: ActionOptions get() = ActionOptions("确认耻辱贷款", listOf(ActionOption("确认") { }))
 
     override fun reset() { }
 

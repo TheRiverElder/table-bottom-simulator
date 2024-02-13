@@ -1,5 +1,6 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions
 
+import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
 
@@ -11,7 +12,12 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
     var options: ActionOptions? = null
 
     private val actionCreators = listOf(
+        ActionCreator("build(loan)") { user, costCard -> LoanAction(user, costCard) },
+        ActionCreator("sell(loan)") { user, costCard -> LoanAction(user, costCard) },
         ActionCreator("loan") { user, costCard -> LoanAction(user, costCard) },
+        ActionCreator("scout(loan)") { user, costCard -> LoanAction(user, costCard) },
+        ActionCreator("network(loan)") { user, costCard -> LoanAction(user, costCard) },
+        ActionCreator("develop(loan)") { user, costCard -> LoanAction(user, costCard) },
     )
 
     fun update() {
@@ -54,20 +60,43 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
     }
 
     fun choose(index: Int) {
-        val function = options?.options?.getOrNull(index)?.callback
-        if (function != null) {
-            function()
+        val action = action
+        val costCardObjectUid = costCardObjectUid
+        if (action != null && costCardObjectUid != null && action.fulfilled) {
+            // 消耗手牌
+            birminghamGamer.gamer?.removeCardFromHand(costCardObjectUid)
+            birminghamGamer.game.simulator.gameObjects[costCardObjectUid]?.let {
+                it.position = Vector2(0, -3000)
+                it.sendUpdateSelf()
+            }
+            // 最终执行行动
+            action.perform()
+
+            resetDirectly()
             update()
+
+            return
+        } else {
+            val option = options?.options?.getOrNull(index)
+            val function = option?.callback
+            if (function != null) {
+                function()
+                update()
+            }
         }
 
         birminghamGamer.game.listenerGameStateUpdated.emit(birminghamGamer.game)
         birminghamGamer.game.listenerActionOptionsUpdated.emit(birminghamGamer)
     }
 
-    fun reset() {
+    fun resetDirectly() {
         costCardObjectUid = null
         action = null
         options = null
+    }
+
+    fun reset() {
+        resetDirectly()
 
         birminghamGamer.game.listenerGameStateUpdated.emit(birminghamGamer.game)
         birminghamGamer.game.listenerActionOptionsUpdated.emit(birminghamGamer)

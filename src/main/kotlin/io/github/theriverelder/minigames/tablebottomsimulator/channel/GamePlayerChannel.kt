@@ -3,7 +3,10 @@ package io.github.theriverelder.minigames.tablebottomsimulator.channel
 import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.user.User
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonPrimitive
 
 class GamePlayerChannel(simulator: TableBottomSimulatorServer) : Channel("game_player", simulator) {
 
@@ -28,21 +31,21 @@ class GamePlayerChannel(simulator: TableBottomSimulatorServer) : Channel("game_p
         }
     }
 
-    fun sendGamers(receiver: User) {
+    fun sendGamers(receiver: User? = null) {
         sendCommand(
             receiver,
             "update_gamers",
             buildJsonArray { simulator.gamers.values.forEach { add(it.extractData(receiver)) } })
     }
 
-    fun sendUsers(receiver: User) {
+    fun sendUsers(receiver: User? = null) {
         sendCommand(
             receiver,
             "update_users",
             buildJsonArray { simulator.users.values.forEach { add(it.save()) } })
     }
 
-    fun sendUsersAndGamers(receiver: User) {
+    fun sendUsersAndGamers(receiver: User? = null) {
         sendUsers(receiver)
         sendGamers(receiver)
     }

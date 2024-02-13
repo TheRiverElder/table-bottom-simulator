@@ -32,12 +32,6 @@ class BirminghamGamer(
         put("money", money)
     }
 
-    fun extractData(): JsonObject = buildJsonObject {
-        put("gamerUid", gamer?.uid)
-        put("ordinal", ordinal)
-        put("money", money)
-    }
-
     override fun restore(data: JsonObject) {
         money = data.forceGet("money").jsonPrimitive.int
     }
@@ -69,7 +63,9 @@ class BirminghamGamer(
                 buildList<Int>(amountOfLevel) {
                     val obj = game.simulator.createAndAddGameObject()
                     obj.factory = Factory(typeName, level)
-                    val card = game.extension.cardSeriesFactory.cards["${gamer.color}_${typeName}_level_${(level).toString().padStart(2, '0')}"]!!
+                    val card = game.extension.cardSeriesFactory.cards["${gamer.color}_${typeName}_level_${
+                        (level).toString().padStart(2, '0')
+                    }"]!!
                     obj.card = card
                     obj.position = factoryPreparingAreaAnchor + Vector2(level * 250, typeIndex * 250)
                     obj.size = Vector2(238, 238)
