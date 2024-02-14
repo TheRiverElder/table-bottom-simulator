@@ -14,6 +14,10 @@ import kotlinx.serialization.json.*
 class CardBehavior(type: BehaviorType<CardBehavior>, host: GameObject, uid: Int) :
     BehaviorAdaptor<CardBehavior>(type, host, uid) {
 
+    companion object {
+        val TYPE = BehaviorType("card", Side.BOTH, ::CardBehavior)
+    }
+
     var flipped: Boolean = false
     var series: CardSeries? = null
     var card: Card? = null
@@ -48,10 +52,6 @@ class CardBehavior(type: BehaviorType<CardBehavior>, host: GameObject, uid: Int)
         this.series = CardSeries.SERIES[data.forceGet("series").jsonPrimitive.content]
         this.card = this.series?.cards?.get(data.forceGet("card").jsonPrimitive.content)
         this.refreshHost()
-    }
-
-    companion object {
-        val TYPE = BehaviorType("card", Side.BOTH, ::CardBehavior)
     }
 }
 

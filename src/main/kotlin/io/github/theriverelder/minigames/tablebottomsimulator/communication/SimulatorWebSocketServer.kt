@@ -87,6 +87,7 @@ class SimulatorWebSocketServer(address: InetSocketAddress?) : WebSocketServer(ad
         println("Connected: ${session.remoteSocketAddress}")
         println("User in: #${user.uid} ${user.name} ${user.gamer?.color}")
 
+        simulator.channelCard.sendCardSerieses(user)
         simulator.channelFullUpdateChannel.sendFullUpdate(user)
 
     }

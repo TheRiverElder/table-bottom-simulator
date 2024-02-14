@@ -142,7 +142,7 @@ class BirminghamGame(
 var GameObject.card: Card
     get() = getBehaviorByType(CardBehavior.TYPE)!!.card!!
     set(value) {
-        val behavior = getBehaviorByType(CardBehavior.TYPE) ?: createAndAddBehavior(CardBehavior.TYPE)
+        val behavior = getOrCreateAndAddBehaviorByType(CardBehavior.TYPE)
         behavior.card = value
     }
 
