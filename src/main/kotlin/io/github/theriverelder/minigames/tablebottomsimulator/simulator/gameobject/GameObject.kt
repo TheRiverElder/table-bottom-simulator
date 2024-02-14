@@ -1,14 +1,12 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.gameobject
+package io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject
 
 import io.github.theriverelder.minigames.lib.management.AutoIncrementObservableRegistry
-import io.github.theriverelder.minigames.lib.management.ObservableRegistry
 import io.github.theriverelder.minigames.lib.management.Registry
 import io.github.theriverelder.minigames.lib.math.Vector2
-import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
-import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
-import io.github.theriverelder.minigames.tablebottomsimulator.save
-import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2
+import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.util.save
+import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2
 import kotlinx.serialization.json.*
 import java.lang.Exception
 
@@ -24,12 +22,12 @@ open class GameObject(
     var shape: String = "circle"
     val tags = Registry(GameObjectTag::name)
 
+    val behaviors = AutoIncrementObservableRegistry(Behavior<*>::uid)
+
     fun remove() {
         simulator.gameObjects.remove(this)
         behaviors.values.forEach { it.onDestroy() }
     }
-
-    val behaviors = AutoIncrementObservableRegistry(Behavior<*>::uid)
 
     fun <T : Behavior<T>> createAndAddBehavior(type: BehaviorType<T>): T {
         val behavior = behaviors.addRaw { type.create(this, it) }

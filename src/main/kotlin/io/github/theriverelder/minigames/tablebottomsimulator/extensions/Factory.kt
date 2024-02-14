@@ -1,7 +1,7 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObject
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObjectTag
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObjectTag
 
 data class Factory(
     val typeName: String,

@@ -1,8 +1,8 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.util
 
 import io.github.theriverelder.minigames.lib.math.Vector2
-import io.github.theriverelder.minigames.tablebottomsimulator.user.Gamer
-import io.github.theriverelder.minigames.tablebottomsimulator.user.User
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import kotlinx.serialization.json.*
 
 
@@ -21,6 +21,3 @@ fun restoreVector2OrNull(data: JsonObject?): Vector2? {
         data["y"]?.jsonPrimitive?.double ?: 0.0,
     )
 }
-
-fun Number.save() = JsonPrimitive(this)
-fun String.save() = JsonPrimitive(this)

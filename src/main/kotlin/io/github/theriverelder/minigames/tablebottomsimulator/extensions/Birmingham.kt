@@ -1,10 +1,6 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 
-import io.github.theriverelder.minigames.lib.math.Vector2
-import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
-import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
-import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
-import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardSeries
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 
 // 只是注册一些主要的BehaviorType
 fun initializeBirmingham(simulator: TableBottomSimulatorServer) {

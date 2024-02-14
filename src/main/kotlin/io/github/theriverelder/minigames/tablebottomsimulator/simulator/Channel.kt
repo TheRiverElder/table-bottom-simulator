@@ -1,7 +1,6 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.channel
+package io.github.theriverelder.minigames.tablebottomsimulator.simulator
 
-import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
-import io.github.theriverelder.minigames.tablebottomsimulator.user.User
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*

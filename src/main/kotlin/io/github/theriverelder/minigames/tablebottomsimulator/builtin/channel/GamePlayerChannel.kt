@@ -1,8 +1,10 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.channel
 
 import io.github.theriverelder.minigames.lib.util.forceGet
-import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
-import io.github.theriverelder.minigames.tablebottomsimulator.user.User
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.Channel
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.sendCommand
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.int

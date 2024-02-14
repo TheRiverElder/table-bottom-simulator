@@ -1,8 +1,8 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 
 import io.github.theriverelder.minigames.lib.util.forceGet
-import io.github.theriverelder.minigames.tablebottomsimulator.channel.Channel
-import io.github.theriverelder.minigames.tablebottomsimulator.user.User
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.Channel
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import kotlinx.serialization.json.*
 
 class BirminghamInstructionChannel(val extension: BirminghamExtension) :

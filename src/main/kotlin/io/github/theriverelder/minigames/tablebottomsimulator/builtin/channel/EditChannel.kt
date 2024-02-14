@@ -2,9 +2,10 @@ package io.github.theriverelder.minigames.tablebottomsimulator.channel
 
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
-import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.ControllerBehavior
-import io.github.theriverelder.minigames.tablebottomsimulator.user.User
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.Channel
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2OrNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.int
@@ -12,7 +13,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.lang.Exception
 
-class EditChannel(name: String, simulator: TableBottomSimulatorServer) : Channel(name, simulator) {
+class EditChannel(simulator: TableBottomSimulatorServer) : Channel("edit", simulator) {
 
     companion object {
         const val CREATE_EMPTY_GAME_OBJECT = "create_empty_game_object"

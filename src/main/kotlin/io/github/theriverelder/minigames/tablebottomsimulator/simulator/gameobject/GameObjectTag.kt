@@ -1,7 +1,7 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.gameobject
+package io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject
 
-import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
-import io.github.theriverelder.minigames.tablebottomsimulator.save
+import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
+import io.github.theriverelder.minigames.tablebottomsimulator.util.save
 import kotlinx.serialization.json.*
 
 class GameObjectTag(

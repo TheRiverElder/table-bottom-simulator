@@ -2,22 +2,12 @@ package io.github.theriverelder.minigames.tablebottomsimulator
 
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.ControllerBehavior
-import io.github.theriverelder.minigames.tablebottomsimulator.builtin.initializeBasic
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import kotlin.math.PI
 
 
-fun initializeSimulator(): TableBottomSimulatorServer {
-    val simulator = TableBottomSimulatorServer()
-    initializeBasic(simulator)
-    initializeTest(simulator)
 
-    println("Valid users: ")
-    simulator.users.values.forEach { println("#${it.uid} ${it.name} ${it.gamer?.color}") }
-
-    return simulator
-}
-
-fun initializeTest(simulator: TableBottomSimulatorServer) {
+fun initializeTestCoins(simulator: TableBottomSimulatorServer) {
 
     val coin15Object = simulator.createAndAddGameObject()
     coin15Object.position = Vector2(100.0, 100.0)

@@ -6,11 +6,11 @@ import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.addAll
 import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.PileBehavior.PileEvent
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.BehaviorAdaptor
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.BehaviorType
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObject
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.Side
-import io.github.theriverelder.minigames.tablebottomsimulator.user.User
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.BehaviorAdaptor
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.BehaviorType
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.Side
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2
 import kotlinx.serialization.json.*
 

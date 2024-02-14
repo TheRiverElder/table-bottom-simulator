@@ -1,14 +1,15 @@
-package io.github.theriverelder.minigames.tablebottomsimulator
+package io.github.theriverelder.minigames.tablebottomsimulator.simulator
 
+import io.github.theriverelder.minigames.tablebottomsimulator.communication.Communication
 import io.github.theriverelder.minigames.lib.management.AutoIncrementObservableRegistry
 import io.github.theriverelder.minigames.lib.management.ObservableRegistry
 import io.github.theriverelder.minigames.lib.management.Registry
-import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.*
 import io.github.theriverelder.minigames.tablebottomsimulator.channel.*
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.BehaviorType
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.GameObject
-import io.github.theriverelder.minigames.tablebottomsimulator.user.Gamer
-import io.github.theriverelder.minigames.tablebottomsimulator.user.User
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.BehaviorType
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 
 class TableBottomSimulatorServer {
 
@@ -21,18 +22,26 @@ class TableBottomSimulatorServer {
     var communication: Communication? = null
     var extensions = Registry(Extension::name)
 
-    val channelFullUpdateChannel = FullUpdateChannel("full_update", this)
+    val channelFullUpdateChannel = FullUpdateChannel(this)
     val channelGameObject = GameObjectChannel(this)
     val channelGamePlayer = GamePlayerChannel(this)
     val channelCard = CardChannel(this)
     val channelBehaviorInstruction = BehaviorInstructionChannel(this)
+    val channelEdit = EditChannel(this)
 
     init {
+
+        behaviorTypes.add(ControllerBehavior.TYPE)
+        behaviorTypes.add(PileBehavior.TYPE)
+        behaviorTypes.add(CardBehavior.TYPE)
+        behaviorTypes.add(PlaceholderBehavior.TYPE)
+
         channels.add(channelFullUpdateChannel)
         channels.add(channelGameObject)
         channels.add(channelGamePlayer)
         channels.add(channelCard)
         channels.add(channelBehaviorInstruction)
+        channels.add(channelEdit)
 
         gameObjects.onAdd.add { channelGameObject.sendUpdateGameObjectFull(it) }
         gameObjects.onRemove.add { channelGameObject.sendRemoveGameObject(it) }

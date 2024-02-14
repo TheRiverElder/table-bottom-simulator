@@ -1,4 +1,4 @@
-package io.github.theriverelder.minigames.tablebottomsimulator
+package io.github.theriverelder.minigames.tablebottomsimulator.util
 
 import kotlinx.serialization.json.*
 

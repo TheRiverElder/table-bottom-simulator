@@ -2,10 +2,9 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 
 import io.github.theriverelder.minigames.lib.management.ListenerManager
 import io.github.theriverelder.minigames.lib.math.Vector2
-import io.github.theriverelder.minigames.tablebottomsimulator.Extension
-import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.Extension
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
-import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardSeries
 
 class BirminghamExtension(

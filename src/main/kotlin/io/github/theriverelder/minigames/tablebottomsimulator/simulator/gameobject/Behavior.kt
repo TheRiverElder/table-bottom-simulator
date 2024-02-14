@@ -1,10 +1,9 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.gameobject
+package io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject
 
-import io.github.theriverelder.minigames.tablebottomsimulator.Persistable
-import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
-import io.github.theriverelder.minigames.tablebottomsimulator.user.User
+import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 

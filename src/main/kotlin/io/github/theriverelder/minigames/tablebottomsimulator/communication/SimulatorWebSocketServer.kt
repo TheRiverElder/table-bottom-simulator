@@ -1,7 +1,8 @@
-package io.github.theriverelder.minigames.tablebottomsimulator
+package io.github.theriverelder.minigames.tablebottomsimulator.communication
 
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamExtension
-import io.github.theriverelder.minigames.tablebottomsimulator.user.User
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import kotlinx.coroutines.runBlocking
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
@@ -31,7 +32,7 @@ class SimulatorWebSocketServer(address: InetSocketAddress?) : WebSocketServer(ad
     val userUidMap = HashMap<Int, Conn>()
     val sessionMap = HashMap<WebSocket, Conn>()
 
-    val simulator = initializeSimulator()
+    val simulator = TableBottomSimulatorServer()
     lateinit var communication: Communication
 
 

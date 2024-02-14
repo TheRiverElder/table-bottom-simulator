@@ -1,5 +1,6 @@
 package io.github.theriverelder.minigames.tablebottomsimulator
 
+import io.github.theriverelder.minigames.tablebottomsimulator.communication.SimulatorWebSocketServer
 import java.net.InetSocketAddress
 
 fun main(args: Array<String>) {

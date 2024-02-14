@@ -1,4 +1,4 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.gameobject
+package io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject
 
 class BehaviorType<T : Behavior<T>>(
     val name: String,

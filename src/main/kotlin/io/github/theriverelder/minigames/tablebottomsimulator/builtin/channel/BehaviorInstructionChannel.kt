@@ -1,9 +1,10 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.channel
 
 import io.github.theriverelder.minigames.lib.util.forceGet
-import io.github.theriverelder.minigames.tablebottomsimulator.TableBottomSimulatorServer
-import io.github.theriverelder.minigames.tablebottomsimulator.gameobject.Behavior
-import io.github.theriverelder.minigames.tablebottomsimulator.user.User
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.Channel
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.Behavior
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import kotlinx.serialization.json.*
 
 class BehaviorInstructionChannel(simulator: TableBottomSimulatorServer) : Channel("behavior_instruction", simulator) {

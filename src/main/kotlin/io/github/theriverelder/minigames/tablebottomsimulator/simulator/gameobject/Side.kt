@@ -1,4 +1,4 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.gameobject
+package io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject
 
 enum class Side(
     val activeOnServer: Boolean,
