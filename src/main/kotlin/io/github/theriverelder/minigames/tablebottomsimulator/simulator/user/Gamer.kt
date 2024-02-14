@@ -66,7 +66,7 @@ class Gamer(
     fun removeCardFromHand(vararg targetUidList: Int) {
         var removed = false
         val newList = arrayListOf<Int>()
-        for (uid in targetUidList) {
+        for (uid in cardObjectUidList) {
             if (targetUidList.contains(uid)) {
                 removed = true
                 continue
