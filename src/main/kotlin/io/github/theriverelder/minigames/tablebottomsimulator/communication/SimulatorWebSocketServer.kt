@@ -73,7 +73,7 @@ class SimulatorWebSocketServer(address: InetSocketAddress?) : WebSocketServer(ad
         val userUid = userUidString.toInt()
 
         if (userUid in userUidMap) {
-            userUidMap[userUid]?.session?.close(200, "User #${userUid} reconnect in")
+            userUidMap[userUid]?.session?.close(1002, "User #${userUid} reconnect in")
         }
 
         val user = simulator.users[userUid] ?: run {
@@ -114,7 +114,7 @@ class SimulatorWebSocketServer(address: InetSocketAddress?) : WebSocketServer(ad
         println("Disconnected: ${session.remoteSocketAddress} $reason")
     }
 
-    override fun onError(conn: WebSocket, ex: Exception) {
+    override fun onError(session: WebSocket, ex: Exception) {
         System.err.println(ex)
     }
 }
