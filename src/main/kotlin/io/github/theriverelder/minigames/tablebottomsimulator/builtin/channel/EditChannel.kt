@@ -1,4 +1,4 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.channel
+package io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel
 
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet

@@ -2,11 +2,11 @@ package io.github.theriverelder.minigames.tablebottomsimulator.simulator.user
 
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
-import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
-import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
+import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2
 import io.github.theriverelder.minigames.tablebottomsimulator.util.save
 import kotlinx.serialization.json.*
@@ -42,7 +42,7 @@ class Gamer(
 
     override fun restore(data: JsonObject) {
         home = restoreVector2(data.forceGet("home").jsonObject)
-        userUid = data.forceGet("userUid").jsonPrimitive.int
+        userUid = data.forceGet("userUid").jsonPrimitive.intOrNull
         color = data.forceGet("color").jsonPrimitive.content
         cardObjectUidList = data["cardObjectUidList"]?.jsonArray?.map { it.jsonPrimitive.int } ?: emptyList()
     }

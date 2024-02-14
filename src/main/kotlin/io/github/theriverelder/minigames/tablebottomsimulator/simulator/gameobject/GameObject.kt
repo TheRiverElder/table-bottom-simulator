@@ -3,6 +3,7 @@ package io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobj
 import io.github.theriverelder.minigames.lib.management.AutoIncrementObservableRegistry
 import io.github.theriverelder.minigames.lib.management.Registry
 import io.github.theriverelder.minigames.lib.math.Vector2
+import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.util.save
@@ -58,7 +59,8 @@ open class GameObject(
             val behaviorUid = (d["uid"] ?: throw Exception("No field: behavior[x].uid")).jsonPrimitive.int
             var behavior = behaviors[behaviorUid]
             if (behavior == null) {
-                val type = simulator.behaviorTypes[behaviorTypeName] ?: throw Exception("No behavior type: $behaviorTypeName")
+                val type =
+                    simulator.behaviorTypes[behaviorTypeName] ?: throw Exception("No behavior type: $behaviorTypeName")
                 behavior = createAndAddBehavior(type)
             }
             behavior.restore(d)
@@ -86,7 +88,7 @@ open class GameObject(
         tags.clear()
         (data["tags"] ?: throw Exception("No field: tags")).jsonArray.forEach {
             val tagData = it.jsonObject
-            val name = tagData.jsonPrimitive.content
+            val name = tagData.forceGet("name").jsonPrimitive.content
             val tag = GameObjectTag(name)
             tag.restore(tagData)
             tags.add(tag)
@@ -94,4 +96,10 @@ open class GameObject(
     }
 
     override fun hashCode(): Int = uid
+}
+
+fun restoreGameObject(data: JsonObject, simulator: TableBottomSimulatorServer): GameObject {
+    val gameObject = GameObject(simulator, data.forceGet("uid").jsonPrimitive.int)
+    gameObject.restore(data)
+    return gameObject
 }

@@ -3,13 +3,14 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 import io.github.theriverelder.minigames.lib.management.ListenerManager
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
-import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
-import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.ActionGuide
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
+import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
+import io.github.theriverelder.minigames.tablebottomsimulator.util.save
 import kotlinx.serialization.json.*
 import java.lang.System.currentTimeMillis
 import kotlin.math.PI
@@ -49,7 +50,7 @@ class BirminghamGame(
         simulator.gamers.clear()
 
         val random = Random(currentTimeMillis())
-        val cardSeries =  extension.cardSeriesCard
+        val cardSeries = extension.cardSeriesCard
 
         println("Initializing game: $gamerAmount gamers")
 
@@ -80,18 +81,12 @@ class BirminghamGame(
         println("Create card set: ${cardGameObjectUidList.size} cards")
 
         // 分牌
+        val gamers = createGamers()
         val cardAmount = ROUNDS_OF_EACH_ERA_BY_PLAYER_AMOUNT[gamerAmount - 2]
         for (ordinal in 0 until gamerAmount) {
 //            println("gamer ${index}")
-            val gamer = simulator.gamers.addRaw { Gamer(simulator, it) }
-            gamer.color = GAMER_COLORS[ordinal]
-            gamer.home = when (ordinal) {
-                0 -> Vector2(3000, -3000)
-                1 -> Vector2(3000, 0)
-                2 -> Vector2(-3000, -3000)
-                3 -> Vector2(-3000, 0)
-                else -> Vector2(5000, 5000)
-            }
+            val gamer = gamers[ordinal]
+
             gamer.cardObjectUidList = cardGameObjectUidList.take(cardAmount)
             cardGameObjectUidList = cardGameObjectUidList.drop(cardAmount)
 
@@ -101,15 +96,32 @@ class BirminghamGame(
         }
         this.cardGameObjectUidList = cardGameObjectUidList
 
-        prepareUsers()
+        prepareGamers()
     }
 
     fun step() {
         currentOrdinal = (currentOrdinal + 1) % gamerList.size
-        prepareUsers()
+        prepareGamers()
     }
 
-    fun prepareUsers() {
+    fun createGamers(): List<Gamer> {
+        return buildList(gamerAmount) {
+            for (ordinal in 0 until gamerAmount) {
+                val gamer = simulator.gamers.addRaw { Gamer(simulator, it) }
+                gamer.color = GAMER_COLORS[ordinal]
+                gamer.home = when (ordinal) {
+                    0 -> Vector2(3000, -3000)
+                    1 -> Vector2(3000, 0)
+                    2 -> Vector2(-3000, -3000)
+                    3 -> Vector2(-3000, 0)
+                    else -> Vector2(5000, 5000)
+                }
+                add(gamer)
+            }
+        }
+    }
+
+    fun prepareGamers() {
         for (birminghamGamer in gamerList) {
             birminghamGamer.actionGuide =
                 if (birminghamGamer.ordinal == currentOrdinal) ActionGuide(birminghamGamer) else null
@@ -123,9 +135,11 @@ class BirminghamGame(
     val listenerActionOptionsUpdated = ListenerManager<BirminghamGamer>()
 
     override fun save(): JsonObject = buildJsonObject {
+        put("gamerAmount", gamerAmount)
         put("period", period)
         put("currentOrdinal", currentOrdinal)
         put("gamerList", buildJsonArray { gamerList.forEach { add(it.save()) } })
+        put("cardGameObjectUidList", cardGameObjectUidList.save())
     }
 
     override fun restore(data: JsonObject) {
@@ -135,8 +149,22 @@ class BirminghamGame(
         data.forceGet("gamerList").jsonArray.forEach { gamerData ->
             gamerList.add(restoreBirminghamGamer(gamerData.jsonObject, this))
         }
+        cardGameObjectUidList = data.forceGet("cardGameObjectUidList").jsonArray.map { it.jsonPrimitive.int }
+
+        // 额外的逻辑
+//        createGamers()
+        prepareGamers()
     }
 
+}
+
+fun restoreBirminghamGame(data: JsonObject, extension: BirminghamExtension): BirminghamGame {
+    val game = BirminghamGame(
+        extension,
+        data.forceGet("gamerAmount").jsonPrimitive.int,
+    )
+    game.restore(data)
+    return game
 }
 
 var GameObject.card: Card

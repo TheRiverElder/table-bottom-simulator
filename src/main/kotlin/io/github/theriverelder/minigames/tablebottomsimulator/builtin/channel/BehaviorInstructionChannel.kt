@@ -1,4 +1,4 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.channel
+package io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel
 
 import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer

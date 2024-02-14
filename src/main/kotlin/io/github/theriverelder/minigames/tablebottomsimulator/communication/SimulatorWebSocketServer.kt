@@ -1,18 +1,18 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.communication
 
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamExtension
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import kotlinx.coroutines.runBlocking
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
-import java.lang.Error
-import java.lang.Exception
 import java.net.InetSocketAddress
 import java.net.URI
 
-class SimulatorWebSocketServer(address: InetSocketAddress?) : WebSocketServer(address) {
+class SimulatorWebSocketServer(
+    val simulator: TableBottomSimulatorServer,
+    address: InetSocketAddress?,
+) : WebSocketServer(address) {
 
     inner class Conn(
         val session: WebSocket,
@@ -32,16 +32,11 @@ class SimulatorWebSocketServer(address: InetSocketAddress?) : WebSocketServer(ad
     val userUidMap = HashMap<Int, Conn>()
     val sessionMap = HashMap<WebSocket, Conn>()
 
-    val simulator = TableBottomSimulatorServer()
+
     lateinit var communication: Communication
-
-
 
     override fun onStart() {
         println("Server started at port $port")
-
-
-        simulator.addExtension(BirminghamExtension(simulator))
 
         communication = Communication(simulator) { data, receiver ->
             val receiverUserUid = receiver.uid
@@ -65,7 +60,7 @@ class SimulatorWebSocketServer(address: InetSocketAddress?) : WebSocketServer(ad
         }
 
         val userUidString = queryData["userUid"] ?: run {
-            session.close(200, "No userUid")
+            session.close(1002, "No userUid")
             println("Connection error: No userUid")
             return
         }

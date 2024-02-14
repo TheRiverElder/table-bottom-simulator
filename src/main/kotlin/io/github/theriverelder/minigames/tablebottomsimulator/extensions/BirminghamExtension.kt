@@ -2,10 +2,14 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 
 import io.github.theriverelder.minigames.lib.management.ListenerManager
 import io.github.theriverelder.minigames.lib.math.Vector2
-import io.github.theriverelder.minigames.tablebottomsimulator.simulator.Extension
-import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardSeries
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.Extension
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonObject
 
 class BirminghamExtension(
     var simulator: TableBottomSimulatorServer,
@@ -29,7 +33,7 @@ class BirminghamExtension(
                 CardSeries("birmingham_card", prefix + "card_back.jpg")
 
             for (name in CARD_NAMES) {
-                cardSeries.cards.add(Card(name, cardSeries,  prefix + "${name}.jpg"))
+                cardSeries.cards.add(Card(name, cardSeries, prefix + "${name}.jpg"))
             }
             CardSeries.SERIES.add(cardSeries)
             cardSeriesCard = cardSeries
@@ -61,6 +65,14 @@ class BirminghamExtension(
 
         simulator.channelCard.sendCardSerieses()
 
+
+        channel = BirminghamInstructionChannel(this)
+        simulator.channels.add(channel)
+
+
+    }
+
+    override fun initialize() {
         // 主要桌布
         val mapObject = simulator.createAndAddGameObject()
         mapObject.size = Vector2(4000.0, 4000.0)
@@ -75,11 +87,18 @@ class BirminghamExtension(
 //        val cardBehavior = cardGameObject.createAndAddBehavior(CardBehavior.TYPE)
 //        cardBehavior.series = cardSeriesCard
 //        cardBehavior.card = cardSeriesCard.cards["birmingham"]
+    }
 
-        channel = BirminghamInstructionChannel(this)
-        simulator.channels.add(channel)
+    override fun save(): JsonObject = buildJsonObject {
+        put("birminghamGame", birminghamGame?.save() ?: JsonNull)
+    }
 
-
+    override fun restore(data: JsonObject) {
+        data["birminghamGame"]?.let { dataElement ->
+            val birminghamGame = restoreBirminghamGame(dataElement.jsonObject, this)
+            this.birminghamGame = birminghamGame
+            listenerGameCreated.emit(birminghamGame)
+        }
     }
 
     fun createGame(gamerAmount: Int) {

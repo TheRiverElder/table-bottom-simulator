@@ -1,11 +1,11 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 
-import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
+//import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 
 // 只是注册一些主要的BehaviorType
-fun initializeBirmingham(simulator: TableBottomSimulatorServer) {
-    val extension = BirminghamExtension(simulator)
-}
+//fun initializeBirmingham(simulator: TableBottomSimulatorServer) {
+//    val extension = BirminghamExtension(simulator)
+//}
 
 val CARD_NAMES = listOf(
     "any",

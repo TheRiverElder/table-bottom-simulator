@@ -7,7 +7,10 @@ class AutoIncrementObservableRegistry<V>(getKey: (V) -> Int) : ObservableRegistr
     fun nextId() = idCounter++
 
     fun addRaw(create: (Int) -> V): V {
-        val id = nextId()
+        var id = nextId()
+        while (containsKey(id)) {
+            id = nextId()
+        }
         val value = create(id)
         add(value)
         return value
