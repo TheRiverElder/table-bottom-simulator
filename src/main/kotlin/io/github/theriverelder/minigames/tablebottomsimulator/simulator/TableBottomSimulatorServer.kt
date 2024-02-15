@@ -135,40 +135,36 @@ class TableBottomSimulatorServer : Persistable {
 }
 
 fun TableBottomSimulatorServer.readFromFile(file: File): Boolean {
+    println("载入存档：开始 $file")
     if (!file.exists() || !file.isFile) return false
     return try {
         FileInputStream(file).use { read(it) }
+        println("载入存档：失败")
         true
     } catch (ex: Exception) {
         ex.printStackTrace()
+        println("载入存档：失败")
         false
     }
 }
 
 fun TableBottomSimulatorServer.writeToFile(file: File): Boolean {
+    println("写入存档：开始 $file")
     val parent = file.parentFile
     if (if (parent.exists()) !parent.isDirectory else !parent.mkdirs()) return false
     return try {
         FileOutputStream(file).use { write(it) }
+        println("写入存档：成功")
         true
     } catch (ex: Exception) {
         ex.printStackTrace()
+        println("写入存档：失败")
         false
     }
 }
 
 val AUTOSAVE_FILE = File("./simulator_data/autosave.json")
 
-fun TableBottomSimulatorServer.readFromAutosave(): Boolean {
-    println("载入自动保存：开始")
-    val result = readFromFile(AUTOSAVE_FILE)
-    println("载入自动保存：结束")
-    return result
-}
+fun TableBottomSimulatorServer.readFromAutosave(): Boolean = readFromFile(AUTOSAVE_FILE)
 
-fun TableBottomSimulatorServer.writeToAutosave(): Boolean {
-    println("自动保存：开始")
-    val result = writeToFile(AUTOSAVE_FILE)
-    println("自动保存：结束")
-    return result
-}
+fun TableBottomSimulatorServer.writeToAutosave(): Boolean = writeToFile(AUTOSAVE_FILE)
