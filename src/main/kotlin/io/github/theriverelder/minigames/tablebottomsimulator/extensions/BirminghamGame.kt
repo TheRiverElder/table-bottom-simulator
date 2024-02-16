@@ -6,6 +6,10 @@ import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionGuide
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.City
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.Network
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.city
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.network
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
@@ -27,6 +31,9 @@ class BirminghamGame(
     var currentOrdinal: Int = 0
 
     var cardGameObjectUidList = emptyList<Int>()
+
+    val cityList = mutableListOf<City>()
+    val networkList = mutableListOf<Network>()
 
     fun getGamerByUserUid(uid: Int): BirminghamGamer? {
         val gamerUid = simulator.users.values.find { it.uid == uid }?.gamer?.uid
@@ -154,6 +161,61 @@ class BirminghamGame(
         // 额外的逻辑
 //        createGamers()
         prepareGamers()
+    }
+
+    fun organizeMap() {
+        val cityGameObjects = arrayListOf<Pair<GameObject, City>>()
+        val networkGameObjects = arrayListOf<Pair<GameObject, Network>>()
+
+        for (gameObject in simulator.gameObjects.values) {
+            val citySlotLocationTag = gameObject.tags["birmingham:city"]
+            if (citySlotLocationTag != null) {
+                val city = gameObject.city
+                cityGameObjects.add(gameObject to city)
+                cityList.add(city)
+                continue
+            }
+            val networkTag = gameObject.tags["birmingham:network"]
+            if (networkTag != null) {
+                val network = gameObject.network
+                networkGameObjects.add(gameObject to network)
+                networkList.add(network)
+                continue
+            }
+        }
+
+//        for (networkPair in networkGameObjects) {
+//            val gameObject = networkPair.first
+//            val rawNetwork = networkPair.second
+//
+//            val position = gameObject.position
+////            val direction = gameObject.rotation
+//
+//            val cityNamePairs = Stack<Pair<String, Double>>()
+//
+//            for (cityPair in cityGameObjects) {
+//                val cityPosition = cityPair.first.position
+//
+//                val distanceSquared = (cityPosition - position).modSquared
+//
+//                val p = cityPair.second.name to distanceSquared
+//                if (cityNamePairs.size < 2) {
+//                    cityNamePairs.add(p)
+//                    continue
+//                }
+//
+//                cityNamePairs.add(p)
+//                cityNamePairs.sortByDescending { it.second }
+//
+//                while (cityNamePairs.size > 2) {
+//                    cityNamePairs.pop()
+//                }
+//            }
+//
+//            val cityNames = cityNamePairs.map { it.first }
+//            val network = Network((cityNames + rawNetwork.cityNames).toSet().toList(), rawNetwork.periods, rawNetwork.placeholderObjectUid)
+//            gameObject.network = network
+//        }
     }
 
 }

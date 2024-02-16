@@ -3,6 +3,8 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionGuide
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.Factory
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.factory
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable

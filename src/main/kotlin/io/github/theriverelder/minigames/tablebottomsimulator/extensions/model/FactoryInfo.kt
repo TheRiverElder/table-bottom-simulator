@@ -1,4 +1,4 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.extensions
+package io.github.theriverelder.minigames.tablebottomsimulator.extensions.model
 
 class FactoryInfo(
     val typeName: String,

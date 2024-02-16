@@ -1,5 +1,6 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.extensions
+package io.github.theriverelder.minigames.tablebottomsimulator.extensions.model
 
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObjectTag
 

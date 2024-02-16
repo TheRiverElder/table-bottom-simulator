@@ -2,6 +2,7 @@ package io.github.theriverelder.minigames.lib.math
 
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 class Vector2(
     val x: Double,
@@ -17,6 +18,9 @@ class Vector2(
     operator fun times(number: Number) = Vector2(x * number.toDouble(), y * number.toDouble())
     operator fun div(number: Number) = Vector2(x / number.toDouble(), y / number.toDouble())
     operator fun rem(number: Number) = Vector2(x % number.toDouble(), y % number.toDouble())
+
+    val modSquared: Double get() = x * x + y * y
+    val mod: Double get() = sqrt(modSquared)
 
     companion object {
         fun fromPolar(theta: Double, rho: Double) = Vector2(rho * cos(theta), rho * sin(theta))

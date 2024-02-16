@@ -44,7 +44,7 @@ open class GameObject(
 
     fun sendUpdateFull() = simulator.channelGameObject.sendUpdateGameObjectFull(this)
 
-    fun sendUpdateSelf() = simulator.channelGameObject.sendUpdateGameObjectSelf(this)
+    fun sendUpdateSelf(options: UpdateGameObjectSelfOptions? = null) = simulator.channelGameObject.sendUpdateGameObjectSelf(this, options)
 
     override fun save(): JsonObject = buildJsonObject {
         saveSelf().entries.forEach { put(it.key, it.value) }

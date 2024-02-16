@@ -2,13 +2,15 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions.action
 
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.PlaceholderBehavior
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel.UpdateGameObjectSelfOptions
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionBase
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionOption
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionOptions
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.city
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.factory
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.cityName
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.factoryTypeNames
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.City
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.factory
 
 class BuildAction(val birminghamGamer: BirminghamGamer, costCard: Card) : ActionBase(birminghamGamer.user!!, costCard) {
 
@@ -17,43 +19,59 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCard: Card) : Action
 
     override val options: ActionOptions?
         get() {
+            val game = birminghamGamer.game
             val factoryObjectUid = factoryObjectUid
             val cityObjectUid = cityObjectUid
 
             return if (factoryObjectUid == null) {
-                val cardFactoryTypeNames = costCard.factoryTypeNames
+                var cardFactoryTypeNames = costCard.factoryTypeNames
 
                 if (cardFactoryTypeNames == null) {
-                    ActionOptions("不是合法的产业牌：${costCard.name}", listOf(
-                        ActionOption("重新选牌") { birminghamGamer.actionGuide?.reset() }
-                    ))
-                } else {
-                    val validFactories = birminghamGamer.factoryObjectUidStacks
-                        .map { it.key to it.value.firstOrNull() }
-                        .filter { it.second != null }
-                        .filter { cardFactoryTypeNames.isEmpty() || it.first in cardFactoryTypeNames }
-
-                    ActionOptions("选择产业类型：", validFactories.map {
-                        val uid = it.second
-                        ActionOption(it.first) { this.factoryObjectUid = it.second }
-                    })
+                    val cityName = costCard.cityName
+                        ?: return ActionOptions("不是合法的工厂牌或城市牌：", listOf(
+                            ActionOption("重新选牌") { birminghamGamer.actionGuide?.reset() }
+                        ))
+                    val cities = game.cityList
+                        .filter { it.name == cityName }
+                        .filter {
+                            val gameObject = game.simulator.gameObjects[it.placeholderObjectUid] ?: return@filter false
+                            val placeholderBehavior =
+                                gameObject.getBehaviorByType(PlaceholderBehavior.TYPE) ?: return@filter false
+                            placeholderBehavior.holdingGameObjects.isEmpty()
+                        }
+                    cardFactoryTypeNames = cities.flatMap { it.factoryTypeNames }.toSet().toList()
                 }
-            } else if (cityObjectUid == null) {
-                val factory = birminghamGamer.gamer!!.simulator.gameObjects[factoryObjectUid]!!.factory
 
-                val cities = birminghamGamer.game.simulator.gameObjects.values
-                    .filter { it.tags.containsKey("birmingham:city_name") }
-                    .filterNot { obj ->
-                        obj.getBehaviorByType(PlaceholderBehavior.TYPE)?.holdingGameObjects
-                            ?.any { it.tags.containsKey("birmingham:factory") }
-                            ?: false
-                    }.map { it to it.city }
-                    .filter { pair -> pair.second.factoryTypes.contains(factory.typeName) }
+                val validFactories = birminghamGamer.factoryObjectUidStacks
+                    .map { it.key to it.value.firstOrNull() }
+                    .filter { it.second != null }
+                    .filter { cardFactoryTypeNames.isEmpty() || it.first in cardFactoryTypeNames }
+
+                ActionOptions("选择产业类型：", validFactories.map {
+                    val uid = it.second
+                    ActionOption(it.first) { this.factoryObjectUid = it.second }
+                })
+
+            } else if (cityObjectUid == null) {
+                val cityName = costCard.cityName
+                val cities: List<City> = if (cityName != null)
+                    game.cityList
+                        .filter { it.name == cityName }
+                        .filter {
+                            val gameObject = game.simulator.gameObjects[it.placeholderObjectUid] ?: return@filter false
+                            val placeholderBehavior =
+                                gameObject.getBehaviorByType(PlaceholderBehavior.TYPE) ?: return@filter false
+                            placeholderBehavior.holdingGameObjects.isEmpty()
+                        }
+                else {
+                    val factory = birminghamGamer.gamer!!.simulator.gameObjects[factoryObjectUid]!!.factory
+                    game.cityList.filter { it.factoryTypeNames.contains(factory.typeName) }
+                }
 
                 ActionOptions("选择城市：", cities.map {
-                    val uid = it.first.uid
-                    val city = it.second
-                    ActionOption(city.name) { this.cityObjectUid = uid }
+                    val uid = it.placeholderObjectUid
+                    val city = it
+                    ActionOption("${city.name}的第${city.index + 1}个槽") { this.cityObjectUid = uid }
                 })
             } else null
         }
@@ -67,10 +85,17 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCard: Card) : Action
         get() = factoryObjectUid != null && cityObjectUid != null
 
     override fun perform() {
-        val factoryObject = birminghamGamer.gamer!!.simulator.gameObjects[factoryObjectUid!!]!!
+        val factoryObjectUid = factoryObjectUid ?: return
+        val factoryObject = birminghamGamer.gamer!!.simulator.gameObjects[factoryObjectUid]!!
         val cityObject = birminghamGamer.gamer!!.simulator.gameObjects[cityObjectUid!!]!!
 
+        val factory = factoryObject.factory
+
         factoryObject.position = cityObject.position
-        factoryObject.sendUpdateSelf()
+        val newList = birminghamGamer.factoryObjectUidStacks[factory.typeName]!!.toMutableList()
+        newList -= factoryObjectUid
+        birminghamGamer.factoryObjectUidStacks[factory.typeName] = newList
+
+        factoryObject.sendUpdateSelf(UpdateGameObjectSelfOptions(position = true))
     }
 }
