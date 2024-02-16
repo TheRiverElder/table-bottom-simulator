@@ -1,4 +1,4 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions
+package io.github.theriverelder.minigames.tablebottomsimulator.extensions.action
 
 interface Action {
     val options: ActionOptions?

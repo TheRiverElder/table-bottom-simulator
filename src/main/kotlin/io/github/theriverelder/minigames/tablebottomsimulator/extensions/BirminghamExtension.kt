@@ -32,7 +32,7 @@ class BirminghamExtension(
             val cardSeries =
                 CardSeries("birmingham_card", prefix + "card_back.jpg")
 
-            for (name in CARD_NAMES) {
+            for (name in (CARD_SET_BY_PLAYER_AMOUNT.map { it.first } + listOf("any", "wild"))) {
                 cardSeries.cards.add(Card(name, cardSeries, prefix + "${name}.jpg"))
             }
             CardSeries.SERIES.add(cardSeries)

@@ -3,11 +3,11 @@ package io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior
 import io.github.theriverelder.minigames.lib.management.Registry
 import io.github.theriverelder.minigames.lib.util.addAll
 import io.github.theriverelder.minigames.lib.util.forceGet
-import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.BehaviorAdaptor
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.BehaviorType
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.Side
+import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.util.save
 import kotlinx.serialization.json.*
 
@@ -104,6 +104,8 @@ data class Card (
     val back: String get() = cardBack ?: series.back
 
     override fun restore(data: JsonObject) { }
+
+    override fun toString(): String = name
 
 }
 

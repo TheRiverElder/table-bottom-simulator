@@ -5,7 +5,7 @@ import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.ActionGuide
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionGuide
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
@@ -173,39 +173,3 @@ var GameObject.card: Card
         val behavior = getOrCreateAndAddBehaviorByType(CardBehavior.TYPE)
         behavior.card = value
     }
-
-val CARD_SET_BY_PLAYER_AMOUNT = listOf(
-    // 青色
-    "belper" to listOf(0, 0, 2),
-    "derby" to listOf(0, 0, 3),
-    // 蓝色
-    "leek" to listOf(0, 2, 2),
-    "stoke_on_trent" to listOf(0, 3, 3),
-    "stone" to listOf(0, 2, 2),
-    "uttoxeter" to listOf(0, 1, 2),
-    // 红色
-    "stafford" to listOf(2, 2, 2),
-    "burton_on_trent" to listOf(2, 2, 2),
-    "cannock" to listOf(2, 2, 2),
-    "tamworth" to listOf(1, 1, 1),
-    "walsall" to listOf(1, 1, 1),
-    // 黄色
-    "coalbrookdale" to listOf(3, 3, 3),
-    "dudley" to listOf(2, 2, 2),
-    "kidderminster" to listOf(2, 2, 2),
-    "wolverhampton" to listOf(2, 2, 2),
-    "worcester" to listOf(2, 2, 2),
-    // 紫色
-    "birmingham" to listOf(3, 3, 3),
-    "coventry" to listOf(3, 3, 3),
-    "nuneaton" to listOf(1, 1, 1),
-    "redditch" to listOf(1, 1, 1),
-    // 产业牌
-    "iron_works" to listOf(4, 4, 4),
-    "coal_mine" to listOf(2, 2, 3),
-    "cotton_mill_or_manufacturer" to listOf(0, 6, 8),
-    "pottery" to listOf(2, 2, 3),
-    "brewery" to listOf(5, 5, 5),
-)
-
-val ROUNDS_OF_EACH_ERA_BY_PLAYER_AMOUNT = listOf(10, 9, 8)

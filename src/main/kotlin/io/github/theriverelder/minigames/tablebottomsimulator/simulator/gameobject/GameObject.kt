@@ -4,12 +4,12 @@ import io.github.theriverelder.minigames.lib.management.AutoIncrementObservableR
 import io.github.theriverelder.minigames.lib.management.Registry
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
-import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel.UpdateGameObjectSelfOptions
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
-import io.github.theriverelder.minigames.tablebottomsimulator.util.save
+import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2
+import io.github.theriverelder.minigames.tablebottomsimulator.util.save
 import kotlinx.serialization.json.*
-import java.lang.Exception
 
 open class GameObject(
     val simulator: TableBottomSimulatorServer,
@@ -68,30 +68,25 @@ open class GameObject(
         }
     }
 
-    fun saveSelf(): JsonObject = buildJsonObject {
+    fun saveSelf(options: UpdateGameObjectSelfOptions = UpdateGameObjectSelfOptions()): JsonObject = buildJsonObject {
         put("uid", uid)
-        put("position", position.save())
-        put("size", size.save())
-        put("rotation", rotation)
-        put("background", background)
-        put("shape", shape)
-        put("tags", tags.values.save())
+        if (options.position) put("position", position.save())
+        if (options.size) put("size", size.save())
+        if (options.rotation) put("rotation", rotation)
+        if (options.background) put("background", background)
+        if (options.shape) put("shape", shape)
+        if (options.tags) put("tags", tags.values.save())
     }
 
     fun restoreSelf(data: JsonObject) {
-        position = restoreVector2((data["position"] ?: throw Exception("No field: position")).jsonObject)
-        size = restoreVector2((data["size"] ?: throw Exception("No field: size")).jsonObject)
-        rotation = (data["rotation"] ?: throw Exception("No field: rotation")).jsonPrimitive.double
-        background = (data["background"] ?: throw Exception("No field: background")).jsonPrimitive.content
-        shape = (data["shape"] ?: throw Exception("No field: shape")).jsonPrimitive.content
-
-        tags.clear()
-        (data["tags"] ?: throw Exception("No field: tags")).jsonArray.forEach {
-            val tagData = it.jsonObject
-            val name = tagData.forceGet("name").jsonPrimitive.content
-            val tag = GameObjectTag(name)
-            tag.restore(tagData)
-            tags.add(tag)
+        data["position"]?.let { position = restoreVector2(it.jsonObject) }
+        data["size"]?.let { size = restoreVector2(it.jsonObject) }
+        data["rotation"]?.let { rotation = it.jsonPrimitive.double }
+        data["background"]?.let { background = it.jsonPrimitive.content }
+        data["shape"]?.let { shape = it.jsonPrimitive.content }
+        data["tags"]?.let {
+            tags.clear()
+            it.jsonArray.forEach { tagData -> tags.add(restoreGameObjectTag(tagData.jsonObject)) }
         }
     }
 

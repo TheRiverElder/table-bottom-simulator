@@ -34,7 +34,7 @@ class GameObjectTag(
 
     override fun restore(data: JsonObject) {
         values = ArrayList(data["values"]?.jsonArray?.map { with(it.jsonPrimitive) {
-            intOrNull ?: booleanOrNull ?: contentOrNull ?: JsonNull
+            intOrNull ?: doubleOrNull ?: booleanOrNull ?: contentOrNull ?: JsonNull
         } } ?: emptyList())
     }
 }

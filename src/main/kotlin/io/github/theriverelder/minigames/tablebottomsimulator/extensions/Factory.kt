@@ -4,9 +4,17 @@ import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobje
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObjectTag
 
 data class Factory(
+    val ownerGamerUid: Int,
     val typeName: String,
     val level: Int,
+    val status: String,
 ) {
+
+    companion object {
+        val STATUS_READY = "status_ready"
+        val STATUS_BUILT = "status_built"
+        val STATUS_SOLD = "status_sold"
+    }
 
     var content: Pair<String, Int>? = null
 
@@ -26,20 +34,22 @@ data class Factory(
 
 var GameObject.factory: Factory
     get() {
-        val typeName = this.tags["birmingham:factory_type"]!!.getString()
-        val level = this.tags["birmingham:factory_level"]!!.getInt()
-        return Factory(typeName, level)
+        val tag = tags["birmingham:factory"]!!
+        val ownerGamerUid = tag.getInt(0)
+        val typeName = tag.getString(1)
+        val level = tag.getInt(2)
+        val status = tag.getString(3)
+        return Factory(ownerGamerUid, typeName, level, status)
     }
     set(value) {
-        this.tags.add(GameObjectTag("birmingham:factory_type", arrayListOf(value.typeName)))
-        this.tags.add(GameObjectTag("birmingham:factory_level", arrayListOf(value.level)))
+        tags.add(
+            GameObjectTag(
+                "birmingham:factory_owner", arrayListOf(
+                    value.ownerGamerUid,
+                    value.typeName,
+                    value.level,
+                    value.status,
+                )
+            )
+        )
     }
-
-val FACTORY_SET = listOf(
-    "brewery" to listOf(2, 2, 2, 1),
-    "manufacturer" to listOf(1, 2, 1, 1, 2, 1, 1, 2),
-    "cotton_mill" to listOf(3, 2, 3, 3),
-    "pottery" to listOf(1, 1, 1, 1, 1),
-    "iron_works" to listOf(1, 1, 1, 1),
-    "coal_mine" to listOf(1, 2, 2, 2),
-)

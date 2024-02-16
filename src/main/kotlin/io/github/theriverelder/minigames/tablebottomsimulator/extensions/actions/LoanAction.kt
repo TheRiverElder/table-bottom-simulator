@@ -2,6 +2,9 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions.action
 
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionBase
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionOption
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionOptions
 
 class LoanAction(val birminghamGamer: BirminghamGamer, costCard: Card) : ActionBase(birminghamGamer.user!!, costCard) {
 

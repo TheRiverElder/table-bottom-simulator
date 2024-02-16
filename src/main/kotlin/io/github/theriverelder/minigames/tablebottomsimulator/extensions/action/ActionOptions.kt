@@ -1,4 +1,4 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions
+package io.github.theriverelder.minigames.tablebottomsimulator.extensions.action
 
 data class ActionOptions(
     val text: String,

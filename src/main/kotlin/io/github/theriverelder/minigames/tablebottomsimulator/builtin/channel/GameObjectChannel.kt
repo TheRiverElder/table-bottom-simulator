@@ -1,8 +1,8 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel
 
 import io.github.theriverelder.minigames.lib.util.forceGet
-import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.Channel
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.Behavior
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
@@ -26,10 +26,11 @@ class GameObjectChannel(simulator: TableBottomSimulatorServer) : Channel("game_o
     })
 
     // 广播，只发送GameObject的几何数据，不包括Behavior数据，接收者若无对应UID的GameObject也不创建
-    fun sendUpdateGameObjectSelf(obj: GameObject) = broadcast(buildJsonObject {
-        put("action", UPDATE_GAME_OBJECT_SELF)
-        put("gameObject", obj.saveSelf())
-    })
+    fun sendUpdateGameObjectSelf(obj: GameObject, options: UpdateGameObjectSelfOptions? = null) =
+        broadcast(buildJsonObject {
+            put("action", UPDATE_GAME_OBJECT_SELF)
+            put("gameObject", if (options == null) obj.saveSelf() else obj.saveSelf(options))
+        })
 
     // 广播，移除GameObject
     fun sendRemoveGameObject(obj: GameObject) = broadcast(buildJsonObject {
@@ -55,7 +56,7 @@ class GameObjectChannel(simulator: TableBottomSimulatorServer) : Channel("game_o
     override fun receive(data: JsonObject, sender: User) {
         if (!sender.isEditor) throw Exception("Not editor: $sender")
         val action = data["action"]?.jsonPrimitive?.content ?: throw Exception("No field: action")
-        when(action) {
+        when (action) {
             UPDATE_GAME_OBJECT_FULL -> receiveUpdateGameObjectFull(data)
             UPDATE_GAME_OBJECT_SELF -> receiveUpdateGameObjectSelf(data)
             REMOVE_GAME_OBJECT -> receiveRemoveGameObject(data)
@@ -78,7 +79,16 @@ class GameObjectChannel(simulator: TableBottomSimulatorServer) : Channel("game_o
         val gameObject = simulator.gameObjects.getOrThrow(gameObjectData.forceGet("uid").jsonPrimitive.int)
         gameObject.restoreSelf(gameObjectData)
 
-        sendUpdateGameObjectSelf(gameObject)
+        sendUpdateGameObjectSelf(
+            gameObject, UpdateGameObjectSelfOptions(
+                position = gameObjectData.containsKey("position"),
+                size = gameObjectData.containsKey("size"),
+                rotation = gameObjectData.containsKey("rotation"),
+                background = gameObjectData.containsKey("background"),
+                shape = gameObjectData.containsKey("shape"),
+                tags = gameObjectData.containsKey("tags"),
+            )
+        )
     }
 
     private fun receiveRemoveGameObject(data: JsonObject) {
@@ -108,3 +118,4 @@ class GameObjectChannel(simulator: TableBottomSimulatorServer) : Channel("game_o
         }
     }
 }
+

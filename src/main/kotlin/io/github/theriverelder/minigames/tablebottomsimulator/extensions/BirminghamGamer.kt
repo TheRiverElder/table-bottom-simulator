@@ -2,10 +2,10 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
-import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.ActionGuide
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionGuide
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
+import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
 import kotlinx.serialization.json.*
 
 class BirminghamGamer(
@@ -36,6 +36,7 @@ class BirminghamGamer(
         money = data.forceGet("money").jsonPrimitive.int
     }
 
+    // 只记录剩下没打出的工厂
     val factoryObjectUidStacks = HashMap<String, List<Int>>()
 
     fun initialize() {
@@ -62,7 +63,7 @@ class BirminghamGamer(
             val factoryList = levels.flatMapIndexed { level, amountOfLevel ->
                 buildList<Int>(amountOfLevel) {
                     val obj = game.simulator.createAndAddGameObject()
-                    obj.factory = Factory(typeName, level)
+                    obj.factory = Factory(gamerUid, typeName, level, Factory.STATUS_READY)
                     val card = game.extension.cardSeriesFactory.cards["${gamer.color}_${typeName}_level_${
                         (level).toString().padStart(2, '0')
                     }"]!!

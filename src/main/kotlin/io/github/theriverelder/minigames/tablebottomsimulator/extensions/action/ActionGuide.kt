@@ -1,8 +1,10 @@
-package io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions
+package io.github.theriverelder.minigames.tablebottomsimulator.extensions.action
 
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.BuildAction
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.LoanAction
 
 class ActionGuide(val birminghamGamer: BirminghamGamer) {
 
@@ -12,9 +14,9 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
     var options: ActionOptions? = null
 
     private val actionCreators = listOf(
-        ActionCreator("build(loan)") { user, costCard -> LoanAction(user, costCard) },
+        ActionCreator("build", ::BuildAction),
         ActionCreator("sell(loan)") { user, costCard -> LoanAction(user, costCard) },
-        ActionCreator("loan") { user, costCard -> LoanAction(user, costCard) },
+        ActionCreator("loan", ::LoanAction),
         ActionCreator("scout(loan)") { user, costCard -> LoanAction(user, costCard) },
         ActionCreator("network(loan)") { user, costCard -> LoanAction(user, costCard) },
         ActionCreator("develop(loan)") { user, costCard -> LoanAction(user, costCard) },
