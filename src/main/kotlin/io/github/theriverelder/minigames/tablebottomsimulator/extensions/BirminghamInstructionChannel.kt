@@ -2,6 +2,7 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 
 import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.Channel
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.sendCommand
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import kotlinx.serialization.json.*
 
@@ -43,13 +44,12 @@ class BirminghamInstructionChannel(val extension: BirminghamExtension) :
                 val gamerAmount = commandData?.get("gamerAmount")?.jsonPrimitive?.int ?: 2
                 extension.createGame(gamerAmount)
             }
+
+            "organize_map" -> {
+                extension.birminghamMap.organize()
+            }
         }
     }
-
-    fun sendCommand(receiver: User, action: String, data: JsonElement = JsonNull) = send(buildJsonObject {
-        put("action", action)
-        put("data", data)
-    }, receiver)
 
     fun sendDisplayActionOptions(receiver: User) {
         val birminghamGamer = extension.birminghamGame?.getGamerByUserUid(receiver.uid) ?: return
@@ -73,7 +73,7 @@ class BirminghamInstructionChannel(val extension: BirminghamExtension) :
         sendCommand(receiver, "display_action_options", commandData)
     }
 
-    fun sendUpdateGameState(receiver: User) {
+    fun sendUpdateGameState(receiver: User? = null) {
         val birminghamGame = extension.birminghamGame
 //        if (birminghamGamer == null) throw Exception("Gamer not found")
 //        val birminghamGamer = birminghamGame?.getGamerByUserUid(user.uid)

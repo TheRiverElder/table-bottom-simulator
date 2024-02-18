@@ -20,6 +20,7 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCard: Card) : Action
     override val options: ActionOptions?
         get() {
             val game = birminghamGamer.game
+            val extension = birminghamGamer.game.extension
             val factoryObjectUid = factoryObjectUid
             val cityObjectUid = cityObjectUid
 
@@ -31,7 +32,7 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCard: Card) : Action
                         ?: return ActionOptions("不是合法的工厂牌或城市牌：", listOf(
                             ActionOption("重新选牌") { birminghamGamer.actionGuide?.reset() }
                         ))
-                    val cities = game.cityList
+                    val cities = extension.birminghamMap.cityList
                         .filter { it.name == cityName }
                         .filter {
                             val gameObject = game.simulator.gameObjects[it.placeholderObjectUid] ?: return@filter false
@@ -55,7 +56,7 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCard: Card) : Action
             } else if (cityObjectUid == null) {
                 val cityName = costCard.cityName
                 val cities: List<City> = if (cityName != null)
-                    game.cityList
+                    extension.birminghamMap.cityList
                         .filter { it.name == cityName }
                         .filter {
                             val gameObject = game.simulator.gameObjects[it.placeholderObjectUid] ?: return@filter false
@@ -65,7 +66,7 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCard: Card) : Action
                         }
                 else {
                     val factory = birminghamGamer.gamer!!.simulator.gameObjects[factoryObjectUid]!!.factory
-                    game.cityList.filter { it.factoryTypeNames.contains(factory.typeName) }
+                    extension.birminghamMap.cityList.filter { it.factoryTypeNames.contains(factory.typeName) }
                 }
 
                 ActionOptions("选择城市：", cities.map {

@@ -6,10 +6,6 @@ import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionGuide
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.City
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.Network
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.city
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.network
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
@@ -32,8 +28,6 @@ class BirminghamGame(
 
     var cardGameObjectUidList = emptyList<Int>()
 
-    val cityList = mutableListOf<City>()
-    val networkList = mutableListOf<Network>()
 
     fun getGamerByUserUid(uid: Int): BirminghamGamer? {
         val gamerUid = simulator.users.values.find { it.uid == uid }?.gamer?.uid
@@ -163,26 +157,6 @@ class BirminghamGame(
         prepareGamers()
     }
 
-    fun organizeMap() {
-        val cityGameObjects = arrayListOf<Pair<GameObject, City>>()
-        val networkGameObjects = arrayListOf<Pair<GameObject, Network>>()
-
-        for (gameObject in simulator.gameObjects.values) {
-            val citySlotLocationTag = gameObject.tags["birmingham:city"]
-            if (citySlotLocationTag != null) {
-                val city = gameObject.city
-                cityGameObjects.add(gameObject to city)
-                cityList.add(city)
-                continue
-            }
-            val networkTag = gameObject.tags["birmingham:network"]
-            if (networkTag != null) {
-                val network = gameObject.network
-                networkGameObjects.add(gameObject to network)
-                networkList.add(network)
-                continue
-            }
-        }
 
 //        for (networkPair in networkGameObjects) {
 //            val gameObject = networkPair.first
@@ -216,7 +190,6 @@ class BirminghamGame(
 //            val network = Network((cityNames + rawNetwork.cityNames).toSet().toList(), rawNetwork.periods, rawNetwork.placeholderObjectUid)
 //            gameObject.network = network
 //        }
-    }
 
 }
 

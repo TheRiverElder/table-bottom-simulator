@@ -20,6 +20,7 @@ class BirminghamExtension(
     var channel: BirminghamInstructionChannel
 
     var birminghamGame: BirminghamGame? = null
+    var birminghamMap = BirminghamMap(this)
 
     val listenerGameCreated = ListenerManager<BirminghamGame>()
 
@@ -91,6 +92,7 @@ class BirminghamExtension(
 
     override fun save(): JsonObject = buildJsonObject {
         put("birminghamGame", birminghamGame?.save() ?: JsonNull)
+        put("birminghamMap", birminghamMap.save())
     }
 
     override fun restore(data: JsonObject) {
@@ -99,6 +101,7 @@ class BirminghamExtension(
             this.birminghamGame = birminghamGame
             listenerGameCreated.emit(birminghamGame)
         }
+        data["birminghamMap"]?.let { this.birminghamMap.restore(it.jsonObject) }
     }
 
     fun createGame(gamerAmount: Int) {
