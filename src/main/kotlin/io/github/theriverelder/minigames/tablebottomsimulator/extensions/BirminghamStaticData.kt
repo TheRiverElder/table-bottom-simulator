@@ -53,6 +53,12 @@ val FACTORY_SET = listOf(
     "coal_mine" to listOf(1, 2, 2, 2),
 )
 
+val SELLABLE_FACTORY_TYPE_LIST = listOf(
+    "manufacturer",
+    "cotton_mill",
+    "pottery",
+)
+
 // 返回null：这张卡不是产业牌
 // 返回size = 0的List：这是一张任意类型产业牌
 // 返回size > 0的List：内容为该产业牌可以应用的产业类型，一般只有一个，但是有的牌有多个

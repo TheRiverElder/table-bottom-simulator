@@ -17,8 +17,8 @@ class PlaceholderBehavior(type: BehaviorType<PlaceholderBehavior>, host: GameObj
         get() = AABBArea(host.position - (host.size / 2), host.size)
 
     val holdingGameObjects: List<GameObject>
-        get() = simulator.gameObjects.values.filter { it.position in area }
+        get() = simulator.gameObjects.values.filter { it.uid != uid && it.position in area }
 
     val holdingGameObject: GameObject?
-        get() = simulator.gameObjects.values.firstOrNull { it.position in area }
+        get() = simulator.gameObjects.values.firstOrNull { it.uid != uid && it.position in area }
 }

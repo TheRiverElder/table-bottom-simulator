@@ -100,11 +100,15 @@ class BirminghamExtension(
 
     override fun restore(data: JsonObject) {
         data["birminghamGame"]?.let { dataElement ->
+            if (dataElement == JsonNull) return@let
             val birminghamGame = restoreBirminghamGame(dataElement.jsonObject, this)
             this.birminghamGame = birminghamGame
             listenerGameCreated.emit(birminghamGame)
         }
-        data["birminghamMap"]?.let { this.birminghamMap.restore(it.jsonObject) }
+        data["birminghamMap"]?.let {
+            if (it == JsonNull) return@let
+            this.birminghamMap.restore(it.jsonObject)
+        }
     }
 
     fun createGame(gamerAmount: Int) {

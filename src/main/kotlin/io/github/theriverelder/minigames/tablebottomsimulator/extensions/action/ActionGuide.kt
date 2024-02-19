@@ -2,10 +2,7 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions.action
 
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.BuildAction
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.DevelopAction
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.LoanAction
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.ScoutAction
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.*
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.cleanupCards
 
 class ActionGuide(val birminghamGamer: BirminghamGamer) {
@@ -17,7 +14,7 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
 
     private val actionCreators = listOf(
         ActionCreator("build", ::BuildAction),
-        ActionCreator("sell(loan)") { user, costCardObjectUid -> LoanAction(user, costCardObjectUid) },
+        ActionCreator("sell", ::SellAction),
         ActionCreator("loan", ::LoanAction),
         ActionCreator("scout", ::ScoutAction),
         ActionCreator("network(loan)") { user, costCardObjectUid -> LoanAction(user, costCardObjectUid) },
@@ -97,6 +94,8 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
 
     fun reset() {
         resetDirectly()
+
+        update()
 
         birminghamGamer.game.listenerGameStateUpdated.emit(birminghamGamer.game)
         birminghamGamer.game.listenerActionOptionsUpdated.emit(birminghamGamer)

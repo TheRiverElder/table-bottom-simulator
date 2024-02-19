@@ -15,7 +15,7 @@ class DevelopAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int
 
     override val options: ActionOptions?
         get() {
-            if (selectedFactoryObjectUidList.size >= 2) return null
+            if (done || selectedFactoryObjectUidList.size >= 2) return null
 
             val uidList = selectedFactoryObjectUidList
             val game = birminghamGamer.game
@@ -24,12 +24,12 @@ class DevelopAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int
                 .filter { it !in uidList }
                 .mapNotNull {
                     val factory: Factory = game.simulator.gameObjects[it]?.factory ?: return@mapNotNull null
-                    ActionOption("${factory.typeName} level ${factory.level + 1}") { selectedFactoryObjectUidList.add(it) }
+                    ActionOption("${factory.typeName} - ${factory.level + 1}级") { selectedFactoryObjectUidList.add(it) }
                 }.let {
                     if (uidList.isEmpty()) it
                     else it + ActionOption("研发掉${uidList.size}个就够了") { done = true }
                 }
-            return ActionOptions("请选择一个工厂指示物丢弃（${uidList.size + 1}/2）", options)
+            return ActionOptions("请选择1到2个工厂丢弃（${uidList.size + 1}/2）", options)
         }
 
     override fun reset() {

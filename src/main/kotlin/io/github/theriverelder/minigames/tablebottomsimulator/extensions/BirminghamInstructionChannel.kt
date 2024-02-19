@@ -48,6 +48,8 @@ class BirminghamInstructionChannel(val extension: BirminghamExtension) :
             "organize_map" -> {
                 extension.birminghamMap.organize()
             }
+
+            "reset_action_options" -> extension.birminghamGame?.getGamerByUserUid(sender.uid)?.actionGuide?.reset()
         }
     }
 
