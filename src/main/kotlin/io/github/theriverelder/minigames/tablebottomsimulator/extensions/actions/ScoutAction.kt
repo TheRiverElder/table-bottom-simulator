@@ -31,15 +31,15 @@ class ScoutAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) 
     override fun perform() {
         val game = birminghamGamer.game
         birminghamGamer.gamer!!.removeCardFromHand(*extraCardObjectUidList.toIntArray())
-        val discardedCards = extraCardObjectUidList.mapNotNull { game.simulator.gameObjects[it] }
-        val positions = discardedCards.map { it.position }
-        discardedCards.forEach { game.discardCard(it) }
+        extraCardObjectUidList
+            .mapNotNull { game.simulator.gameObjects[it] }
+            .forEach { game.discardCard(it) }
+
         listOfNotNull(
             game.extension.cardSeriesCard.cards["any"],
             game.extension.cardSeriesCard.cards["wild"],
-        ).forEachIndexed { index, card ->
+        ).forEach { card ->
             val gameObject = game.simulator.createAndAddGameObject()
-            positions.getOrNull(index)?.let { gameObject.position = it; println("position = ${it}, uid = ${gameObject.uid}") }
             gameObject.card = card
             gameObject.shape = "rectangle"
             gameObject.sendUpdateFull()

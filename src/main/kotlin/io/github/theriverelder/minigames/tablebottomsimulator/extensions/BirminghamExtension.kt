@@ -4,8 +4,11 @@ import io.github.theriverelder.minigames.lib.management.ListenerManager
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardSeries
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel.UpdateGameObjectSelfOptions
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.Extension
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
@@ -118,3 +121,15 @@ val GAMER_COLORS = listOf(
     "teal",
     "purple",
 )
+
+fun Gamer.cleanupCards(gap: Double = 10.0): List<GameObject> {
+    val gameObjects = cardObjectUidList.mapNotNull { simulator.gameObjects[it] }
+    var xCounter = 0.0
+    for (gameObject in gameObjects) {
+        gameObject.position = home + Vector2(xCounter, 0)
+        xCounter += gameObject.size.x + gap
+        gameObject.sendUpdateSelf(UpdateGameObjectSelfOptions(position = true))
+    }
+
+    return gameObjects
+}

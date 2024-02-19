@@ -5,6 +5,7 @@ import io.github.theriverelder.minigames.tablebottomsimulator.extensions.Birming
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.BuildAction
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.LoanAction
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.ScoutAction
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.cleanupCards
 
 class ActionGuide(val birminghamGamer: BirminghamGamer) {
 
@@ -73,8 +74,6 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
 
             resetDirectly()
             update()
-
-            return
         } else {
             val option = options?.options?.getOrNull(index)
             val function = option?.callback
@@ -84,6 +83,7 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
             }
         }
 
+        birminghamGamer.gamer?.cleanupCards(50.0)
         birminghamGamer.game.listenerGameStateUpdated.emit(birminghamGamer.game)
         birminghamGamer.game.listenerActionOptionsUpdated.emit(birminghamGamer)
     }

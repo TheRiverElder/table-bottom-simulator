@@ -2,6 +2,7 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 
 import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel.UpdateGameObjectSelfOptions
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionGuide
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.Factory
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.factory
@@ -47,13 +48,11 @@ class BirminghamGamer(
 
         val gamer = gamer!!
 
-        val cardAreaAnchor = gamer.home
-
-        gamer.cardObjects.forEachIndexed { index, gameObject ->
-            gameObject.position = cardAreaAnchor + Vector2(index * 550, 0)
-            gameObject.rotation = 0.0
-            gameObject.sendUpdateSelf()
-        }
+        gamer.cleanupCards(50.0)
+            .forEach {
+                it.rotation = 0.0
+                it.sendUpdateSelf(UpdateGameObjectSelfOptions(position = true, rotation = true))
+            }
 
         val factoryPreparingAreaAnchor = gamer.home + Vector2(0, 800)
 
