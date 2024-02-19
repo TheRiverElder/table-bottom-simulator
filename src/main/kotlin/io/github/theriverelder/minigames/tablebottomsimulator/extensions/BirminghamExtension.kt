@@ -41,7 +41,7 @@ class BirminghamExtension(
         }
         run {
             val prefix = "http://localhost:8089/minigames/birmingham/image/gamers/"
-            val cardSeries = CardSeries("birmingham_factory", "")
+            val cardSeries = CardSeries("birmingham_factory", "", Vector2(238, 238))
             GAMER_COLORS.forEach { gamerColor ->
                 FACTORY_SET.forEach { data ->
                     val typeName = data.first

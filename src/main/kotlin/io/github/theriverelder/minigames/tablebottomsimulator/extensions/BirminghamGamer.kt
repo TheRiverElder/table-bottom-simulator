@@ -71,7 +71,6 @@ class BirminghamGamer(
                     }"]!!
                     obj.card = card
                     obj.position = factoryPreparingAreaAnchor + Vector2(level * 250, typeIndex * 250)
-                    obj.size = Vector2(238, 238)
                     obj.shape = "rectangle"
 
                     obj.sendUpdateFull()
