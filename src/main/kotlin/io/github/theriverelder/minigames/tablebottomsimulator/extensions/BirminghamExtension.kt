@@ -31,7 +31,7 @@ class BirminghamExtension(
         run {
             val prefix = "http://localhost:8089/minigames/birmingham/image/common/cards/"
             val cardSeries =
-                CardSeries("birmingham_card", prefix + "card_back.jpg")
+                CardSeries("birmingham_card", prefix + "card_back.jpg", Vector2(500, 702))
 
             for (name in (CARD_SET_BY_PLAYER_AMOUNT.map { it.first } + listOf("any", "wild"))) {
                 cardSeries.cards.add(Card(name, cardSeries, prefix + "${name}.jpg"))

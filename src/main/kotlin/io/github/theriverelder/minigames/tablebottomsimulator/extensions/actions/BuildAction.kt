@@ -1,6 +1,5 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions
 
-import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.PlaceholderBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel.UpdateGameObjectSelfOptions
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
@@ -12,13 +11,14 @@ import io.github.theriverelder.minigames.tablebottomsimulator.extensions.factory
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.City
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.factory
 
-class BuildAction(val birminghamGamer: BirminghamGamer, costCard: Card) : ActionBase(birminghamGamer.user!!, costCard) {
+class BuildAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) : ActionBase(birminghamGamer.user!!, costCardObjectUid) {
 
     var factoryObjectUid: Int? = null
     var cityObjectUid: Int? = null
 
     override val options: ActionOptions?
         get() {
+            val costCard = costCard
             val game = birminghamGamer.game
             val extension = birminghamGamer.game.extension
             val factoryObjectUid = factoryObjectUid

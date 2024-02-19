@@ -22,6 +22,7 @@ class Vector2(
     val modSquared: Double get() = x * x + y * y
     val mod: Double get() = sqrt(modSquared)
 
+    override fun toString(): String = "(${x}, ${y})"
     companion object {
         fun fromPolar(theta: Double, rho: Double) = Vector2(rho * cos(theta), rho * sin(theta))
 

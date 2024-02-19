@@ -1,10 +1,10 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions.action
 
-import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.BuildAction
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.LoanAction
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.ScoutAction
 
 class ActionGuide(val birminghamGamer: BirminghamGamer) {
 
@@ -15,11 +15,11 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
 
     private val actionCreators = listOf(
         ActionCreator("build", ::BuildAction),
-        ActionCreator("sell(loan)") { user, costCard -> LoanAction(user, costCard) },
+        ActionCreator("sell(loan)") { user, costCardObjectUid -> LoanAction(user, costCardObjectUid) },
         ActionCreator("loan", ::LoanAction),
-        ActionCreator("scout(loan)") { user, costCard -> LoanAction(user, costCard) },
-        ActionCreator("network(loan)") { user, costCard -> LoanAction(user, costCard) },
-        ActionCreator("develop(loan)") { user, costCard -> LoanAction(user, costCard) },
+        ActionCreator("scout", ::ScoutAction),
+        ActionCreator("network(loan)") { user, costCardObjectUid -> LoanAction(user, costCardObjectUid) },
+        ActionCreator("develop(loan)") { user, costCardObjectUid -> LoanAction(user, costCardObjectUid) },
     )
 
     fun update() {
@@ -28,7 +28,7 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
         val costCard =
             if (costCardObjectUid != null) simulator.gameObjects[costCardObjectUid]!!.getBehaviorByType(CardBehavior.TYPE)!!.card else null
         val action = action
-        if (costCard == null) {
+        if (costCardObjectUid == null || costCard == null) {
             options = birminghamGamer.gamer?.cardObjects?.let {
                 ActionOptions(
                     "选择一张手牌：",
@@ -43,7 +43,7 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
                 "选择以下行动之一：",
                 actionCreators.map { creator ->
                     ActionOption(creator.name) {
-                        this.action = creator.create(birminghamGamer, costCard)
+                        this.action = creator.create(birminghamGamer, costCardObjectUid)
                     }
                 }
             )
@@ -67,10 +67,7 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
         if (action != null && costCardObjectUid != null && action.fulfilled) {
             // 消耗手牌
             birminghamGamer.gamer?.removeCardFromHand(costCardObjectUid)
-            birminghamGamer.game.simulator.gameObjects[costCardObjectUid]?.let {
-                it.position = Vector2(0, -3000)
-                it.sendUpdateSelf()
-            }
+            birminghamGamer.game.simulator.gameObjects[costCardObjectUid]?.let { birminghamGamer.game.discardCard(it) }
             // 最终执行行动
             action.perform()
 

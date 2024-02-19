@@ -5,6 +5,7 @@ import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.Card
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel.UpdateGameObjectSelfOptions
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionGuide
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.TableBottomSimulatorServer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
@@ -71,7 +72,6 @@ class BirminghamGame(
                     gameObject.position = Vector2(-1474, -1370)
                     gameObject.rotation = PI / 2
                     gameObject.card = card
-                    gameObject.size = Vector2(500.0, 702.0)
                     gameObject.shape = "rectangle"
                     gameObject.sendUpdateFull()
                     add(gameObject.uid)
@@ -191,6 +191,10 @@ class BirminghamGame(
 //            gameObject.network = network
 //        }
 
+    fun discardCard(gameObject: GameObject) {
+        gameObject.position = Vector2(0, -3000)
+        gameObject.sendUpdateSelf(UpdateGameObjectSelfOptions(position = true))
+    }
 }
 
 fun restoreBirminghamGame(data: JsonObject, extension: BirminghamExtension): BirminghamGame {

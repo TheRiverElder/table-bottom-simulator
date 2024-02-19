@@ -1,13 +1,16 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior
 
 import io.github.theriverelder.minigames.lib.management.Registry
+import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.addAll
 import io.github.theriverelder.minigames.lib.util.forceGet
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel.UpdateGameObjectSelfOptions
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.BehaviorAdaptor
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.BehaviorType
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.Side
 import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
+import io.github.theriverelder.minigames.tablebottomsimulator.util.restoreVector2
 import io.github.theriverelder.minigames.tablebottomsimulator.util.save
 import kotlinx.serialization.json.*
 
@@ -34,8 +37,9 @@ class CardBehavior(type: BehaviorType<CardBehavior>, host: GameObject, uid: Int)
     fun refreshHost() {
         val card = card
         if (card != null) {
-            this.host.background = if (!flipped) card.face else card.back
-            this.host.sendUpdateSelf()
+            host.background = if (!flipped) card.face else card.back
+            card.size?.let { host.size = it }
+            host.sendUpdateSelf(UpdateGameObjectSelfOptions(background = true, size = true))
         }
     }
 
@@ -58,6 +62,7 @@ class CardBehavior(type: BehaviorType<CardBehavior>, host: GameObject, uid: Int)
 class CardSeries(
     val name: String,
     val back: String,
+    val size: Vector2? = null,
 ) : Persistable {
 
     val cards = Registry(Card::name);
@@ -93,6 +98,7 @@ data class Card (
     val series: CardSeries,
     val face: String,
     val cardBack: String? = null, // 为null则代表用series.back
+    val cardSize: Vector2? = null,
 ) : Persistable {
     override fun save(): JsonObject = buildJsonObject {
         put("name", name)
@@ -102,6 +108,7 @@ data class Card (
     }
 
     val back: String get() = cardBack ?: series.back
+    val size: Vector2? get() = cardSize ?: series.size
 
     override fun restore(data: JsonObject) { }
 
@@ -115,6 +122,7 @@ fun restoreCard(data: JsonObject, series: CardSeries? = null): Card {
         series ?: CardSeries.SERIES.getOrThrow(data.forceGet("seriesName").jsonPrimitive.content),
         data.forceGet("face").jsonPrimitive.content,
         data.forceGet("cardBack").jsonPrimitive.contentOrNull,
+        data["cardSize"]?.jsonObject?.let { restoreVector2(it) },
     )
     card.restore(data)
     return card

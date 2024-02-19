@@ -45,7 +45,7 @@ var GameObject.factory: Factory
     set(value) {
         tags.add(
             GameObjectTag(
-                "birmingham:factory_owner", arrayListOf(
+                "birmingham:factory", arrayListOf(
                     value.ownerGamerUid,
                     value.typeName,
                     value.level,
