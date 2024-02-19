@@ -3,6 +3,7 @@ package io.github.theriverelder.minigames.tablebottomsimulator.extensions.action
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.CardBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.BuildAction
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.DevelopAction
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.LoanAction
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions.ScoutAction
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.cleanupCards
@@ -20,7 +21,7 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
         ActionCreator("loan", ::LoanAction),
         ActionCreator("scout", ::ScoutAction),
         ActionCreator("network(loan)") { user, costCardObjectUid -> LoanAction(user, costCardObjectUid) },
-        ActionCreator("develop(loan)") { user, costCardObjectUid -> LoanAction(user, costCardObjectUid) },
+        ActionCreator("develop", ::DevelopAction),
     )
 
     fun update() {
@@ -68,7 +69,7 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
         if (action != null && costCardObjectUid != null && action.fulfilled) {
             // 消耗手牌
             birminghamGamer.gamer?.removeCardFromHand(costCardObjectUid)
-            birminghamGamer.game.simulator.gameObjects[costCardObjectUid]?.let { birminghamGamer.game.discardCard(it) }
+            birminghamGamer.game.simulator.gameObjects[costCardObjectUid]?.let { birminghamGamer.game.discardGameObject(it) }
             // 最终执行行动
             action.perform()
 

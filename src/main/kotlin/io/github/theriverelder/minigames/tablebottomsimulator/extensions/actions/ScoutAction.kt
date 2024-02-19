@@ -26,14 +26,14 @@ class ScoutAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) 
         extraCardObjectUidList.clear()
     }
 
-    override val fulfilled: Boolean get() = extraCardObjectUidList.size == 2
+    override val fulfilled: Boolean get() = extraCardObjectUidList.size >= 2
 
     override fun perform() {
         val game = birminghamGamer.game
         birminghamGamer.gamer!!.removeCardFromHand(*extraCardObjectUidList.toIntArray())
         extraCardObjectUidList
             .mapNotNull { game.simulator.gameObjects[it] }
-            .forEach { game.discardCard(it) }
+            .forEach { game.discardGameObject(it) }
 
         listOfNotNull(
             game.extension.cardSeriesCard.cards["any"],

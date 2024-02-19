@@ -111,11 +111,11 @@ class BirminghamGame(
                 val gamer = simulator.gamers.addRaw { Gamer(simulator, it) }
                 gamer.color = GAMER_COLORS[ordinal]
                 gamer.home = when (ordinal) {
-                    0 -> Vector2(3000, -3000)
+                    0 -> Vector2(3000, -4000)
                     1 -> Vector2(3000, 0)
-                    2 -> Vector2(-3000, -3000)
-                    3 -> Vector2(-3000, 0)
-                    else -> Vector2(5000, 5000)
+                    2 -> Vector2(-7000, -4000)
+                    3 -> Vector2(-7000, 0)
+                    else -> Vector2(10000, 10000)
                 }
                 add(gamer)
             }
@@ -191,7 +191,7 @@ class BirminghamGame(
 //            gameObject.network = network
 //        }
 
-    fun discardCard(gameObject: GameObject) {
+    fun discardGameObject(gameObject: GameObject) {
         gameObject.position = Vector2(0, -3000)
         gameObject.sendUpdateSelf(UpdateGameObjectSelfOptions(position = true))
     }

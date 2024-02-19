@@ -62,20 +62,24 @@ class BirminghamGamer(
             val levels = pair.second
 
             val factoryList = levels.flatMapIndexed { level, amountOfLevel ->
-                buildList<Int>(amountOfLevel) {
-                    val obj = game.simulator.createAndAddGameObject()
-                    obj.factory = Factory(gamerUid, typeName, level, Factory.STATUS_READY)
-                    val card = game.extension.cardSeriesFactory.cards["${gamer.color}_${typeName}_level_${
-                        (level).toString().padStart(2, '0')
-                    }"]!!
-                    obj.card = card
-                    obj.position = factoryPreparingAreaAnchor + Vector2(level * 250, typeIndex * 250)
-                    obj.shape = "rectangle"
+                buildList(amountOfLevel) {
+                    repeat(amountOfLevel) { indexOfSameLevel ->
+                        val obj = game.simulator.createAndAddGameObject()
+                        obj.factory = Factory(gamerUid, typeName, level, Factory.STATUS_READY)
+                        val cardName = "${gamer.color}_${typeName}_level_${(level).toString().padStart(2, '0')}"
+                        val card = game.extension.cardSeriesFactory.cards[cardName]!!
+                        obj.card = card
+                        val offsetIndex = amountOfLevel - indexOfSameLevel - 1
+                        obj.position = factoryPreparingAreaAnchor +
+                                Vector2(level * 300, typeIndex * 350) +
+                                Vector2((amountOfLevel - offsetIndex) * 20, (amountOfLevel - offsetIndex) * 20)
+                        obj.shape = "rectangle"
 
-                    obj.sendUpdateFull()
+                        obj.sendUpdateFull()
 
-                    obj.uid
-                }
+                        add(obj.uid)
+                    }
+                }.reversed()
             }
             factoryObjectUidStacks[typeName] = factoryList
         }
