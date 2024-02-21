@@ -64,7 +64,7 @@ val SELLABLE_FACTORY_TYPE_LIST = listOf(
 // 返回size > 0的List：内容为该产业牌可以应用的产业类型，一般只有一个，但是有的牌有多个
 val Card.factoryTypeNames: List<String>?
     get() {
-        if (series.name != "birmingham_card") return null
+        if (series.name != "birmingham:card") return null
         return when (name) {
             "iron_works" -> listOf(name)
             "coal_mine" -> listOf(name)
@@ -81,7 +81,7 @@ val Card.factoryTypeNames: List<String>?
 // 返回非空String：内容为该城市牌可以应用的城市，一般只有一个
 val Card.cityName: String?
     get() {
-        if (series.name != "birmingham_card") return null
+        if (series.name != "birmingham:card") return null
         return when (name) {
             in CARD_SET_BY_PLAYER_AMOUNT_CITIES.map { it.first } -> name
             "wild" -> ""

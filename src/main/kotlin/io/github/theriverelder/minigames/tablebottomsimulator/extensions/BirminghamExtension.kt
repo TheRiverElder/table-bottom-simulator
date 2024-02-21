@@ -29,12 +29,14 @@ class BirminghamExtension(
 
     lateinit var cardSeriesCard: CardSeries
     lateinit var cardSeriesFactory: CardSeries
+    lateinit var cardSeriesNetwork: CardSeries
 
     init {
         run {
             val prefix = "http://localhost:8089/minigames/birmingham/image/common/cards/"
             val cardSeries =
-                CardSeries("birmingham_card", prefix + "card_back.jpg", Vector2(500, 702))
+                CardSeries("birmingham:card", prefix + "card_back.jpg", Vector2(400, 560))
+//                CardSeries("birmingham_card", prefix + "card_back.jpg", Vector2(500, 702))
 
             for (name in (CARD_SET_BY_PLAYER_AMOUNT.map { it.first } + listOf("any", "wild"))) {
                 cardSeries.cards.add(Card(name, cardSeries, prefix + "${name}.jpg"))
@@ -44,7 +46,7 @@ class BirminghamExtension(
         }
         run {
             val prefix = "http://localhost:8089/minigames/birmingham/image/gamers/"
-            val cardSeries = CardSeries("birmingham_factory", "", Vector2(238, 238))
+            val cardSeries = CardSeries("birmingham:factory", "", Vector2(180, 180))
             GAMER_COLORS.forEach { gamerColor ->
                 FACTORY_SET.forEach { data ->
                     val typeName = data.first
@@ -65,6 +67,16 @@ class BirminghamExtension(
             }
             CardSeries.SERIES.add(cardSeries)
             cardSeriesFactory = cardSeries
+        }
+        run {
+            val prefix = "http://localhost:8089/minigames/birmingham/image/gamers/"
+            val cardSeries = CardSeries("birmingham:network", "", Vector2(190, 80))
+            GAMER_COLORS.forEach { gamerColor ->
+                cardSeries.cards.add(Card("${gamerColor}_canal", cardSeries, prefix + "${gamerColor}/canal.png"))
+                cardSeries.cards.add(Card("${gamerColor}_rail", cardSeries, prefix + "${gamerColor}/rail.png"))
+            }
+            CardSeries.SERIES.add(cardSeries)
+            cardSeriesNetwork = cardSeries
         }
 
         simulator.channelCard.sendCardSerieses()

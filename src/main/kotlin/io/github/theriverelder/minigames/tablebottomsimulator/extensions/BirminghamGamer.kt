@@ -9,6 +9,7 @@ import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.f
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
+import io.github.theriverelder.minigames.tablebottomsimulator.util.save
 import kotlinx.serialization.json.*
 
 class BirminghamGamer(
@@ -33,10 +34,15 @@ class BirminghamGamer(
         put("gamerUid", gamer?.uid)
         put("ordinal", ordinal)
         put("money", money)
+        put("factoryObjectUidStacks", factoryObjectUidStacks.save())
     }
 
     override fun restore(data: JsonObject) {
         money = data.forceGet("money").jsonPrimitive.int
+        factoryObjectUidStacks.clear()
+        data.forceGet("factoryObjectUidStacks").jsonObject.forEach { k, v ->
+            factoryObjectUidStacks[k] = v.jsonArray.map { it.jsonPrimitive.int }
+        }
     }
 
     // 只记录剩下没打出的工厂

@@ -32,6 +32,9 @@ class BirminghamMap(
         val cityGameObjects = arrayListOf<Pair<GameObject, City>>()
         val networkGameObjects = arrayListOf<Pair<GameObject, Network>>()
 
+        cityList.clear()
+        networkList.clear()
+
         for (gameObject in extension.simulator.gameObjects.values) {
             val citySlotLocationTag = gameObject.tags["birmingham:city"]
             if (citySlotLocationTag != null) {

@@ -11,7 +11,8 @@ import io.github.theriverelder.minigames.tablebottomsimulator.extensions.factory
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.City
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.factory
 
-class BuildAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) : ActionBase(birminghamGamer.user!!, costCardObjectUid) {
+class BuildAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) :
+    ActionBase(birminghamGamer.user!!, costCardObjectUid) {
 
     var factoryObjectUid: Int? = null
     var cityObjectUid: Int? = null
@@ -33,15 +34,18 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) 
                             ActionOption("重新选牌") { birminghamGamer.actionGuide?.reset() }
                         ))
                     val cities = extension.birminghamMap.cityList
-                        .filter { it.name == cityName }
+                        .filter { it.name == cityName || cityName == "" }
                         .filter {
                             val gameObject = game.simulator.gameObjects[it.placeholderObjectUid] ?: return@filter false
                             val placeholderBehavior =
                                 gameObject.getBehaviorByType(PlaceholderBehavior.TYPE) ?: return@filter false
                             placeholderBehavior.holdingGameObjects.isEmpty()
                         }
-                    cardFactoryTypeNames = cities.flatMap { it.factoryTypeNames }.toSet().toList()
+                    cardFactoryTypeNames = if (cities.isEmpty()) null else
+                        cities.flatMap { it.factoryTypeNames }.toSet().toList()
                 }
+
+                if (cardFactoryTypeNames == null) return ActionOptions("无可用产业类型：", emptyList())
 
                 val validFactories = birminghamGamer.factoryObjectUidStacks
                     .map { it.key to it.value.firstOrNull() }
@@ -49,7 +53,6 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) 
                     .filter { cardFactoryTypeNames.isEmpty() || it.first in cardFactoryTypeNames }
 
                 ActionOptions("选择产业类型：", validFactories.map {
-                    val uid = it.second
                     ActionOption(it.first) { this.factoryObjectUid = it.second }
                 })
 

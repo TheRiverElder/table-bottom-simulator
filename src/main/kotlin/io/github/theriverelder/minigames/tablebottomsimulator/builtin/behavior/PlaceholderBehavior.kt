@@ -17,8 +17,13 @@ class PlaceholderBehavior(type: BehaviorType<PlaceholderBehavior>, host: GameObj
         get() = AABBArea(host.position - (host.size / 2), host.size)
 
     val holdingGameObjects: List<GameObject>
-        get() = simulator.gameObjects.values.filter { it.uid != uid && it.position in area }
+        get() = simulator.gameObjects.values.filter(this::checkHolding)
 
     val holdingGameObject: GameObject?
-        get() = simulator.gameObjects.values.firstOrNull { it.uid != uid && it.position in area }
+        get() = simulator.gameObjects.values.firstOrNull(this::checkHolding)
+
+    private fun checkHolding(gameObject: GameObject): Boolean = gameObject.uid != uid &&
+            gameObject.position in area &&
+            gameObject.getBehaviorByType(TYPE) == null &&
+            gameObject.tags.containsKey("tbs:ignored_by_placeholder")
 }
