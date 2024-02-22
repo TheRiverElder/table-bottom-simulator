@@ -40,5 +40,13 @@ var GameObject.network: Network
         return Network(cityNames, periods, uid)
     }
     set(value) {
-        tags.add(GameObjectTag("birmingham:network", (value.periods + value.cityNames).toMutableList()))
+        var periodString = ""
+        for (period in value.periods) {
+            periodString += when (period) {
+                1 -> "c"
+                2 -> "r"
+                else -> ""
+            }
+        }
+        tags.add(GameObjectTag("birmingham:network", (listOf(periodString) + value.cityNames).toMutableList()))
     }

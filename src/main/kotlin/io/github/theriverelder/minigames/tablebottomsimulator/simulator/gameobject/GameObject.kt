@@ -30,8 +30,14 @@ open class GameObject(
         behaviors.values.forEach { it.onDestroy() }
     }
 
-    fun <T : Behavior<T>> createAndAddBehavior(type: BehaviorType<T>): T {
-        val behavior = behaviors.addRaw { type.create(this, it) }
+    fun <T : Behavior<T>> createAndAddBehavior(type: BehaviorType<T>, uid: Int? = null): T {
+        val behavior =
+            if (uid == null) behaviors.addRaw { type.create(this, it) }
+            else {
+                val b = type.create(this, uid)
+                behaviors.add(b)
+                b
+            }
         behavior.onInitialize()
         return behavior as T
     }
@@ -39,12 +45,13 @@ open class GameObject(
     fun <T : Behavior<T>> getBehaviorByType(type: BehaviorType<T>): T? =
         behaviors.values.find { it.type == type } as? T
 
-    fun <T : Behavior<T>> getOrCreateAndAddBehaviorByType(type: BehaviorType<T>): T =
-        behaviors.values.find { it.type == type } as? T ?: createAndAddBehavior(type)
+    fun <T : Behavior<T>> getOrCreateAndAddBehaviorByType(type: BehaviorType<T>, uid: Int? = null): T =
+        behaviors.values.find { it.type == type } as? T ?: createAndAddBehavior(type, uid)
 
     fun sendUpdateFull() = simulator.channelGameObject.sendUpdateGameObjectFull(this)
 
-    fun sendUpdateSelf(options: UpdateGameObjectSelfOptions? = null) = simulator.channelGameObject.sendUpdateGameObjectSelf(this, options)
+    fun sendUpdateSelf(options: UpdateGameObjectSelfOptions? = null) =
+        simulator.channelGameObject.sendUpdateGameObjectSelf(this, options)
 
     override fun save(): JsonObject = buildJsonObject {
         saveSelf().entries.forEach { put(it.key, it.value) }
@@ -61,10 +68,9 @@ open class GameObject(
             if (behavior == null) {
                 val type =
                     simulator.behaviorTypes[behaviorTypeName] ?: throw Exception("No behavior type: $behaviorTypeName")
-                behavior = createAndAddBehavior(type)
+                behavior = createAndAddBehavior(type, behaviorUid)
             }
             behavior.restore(d)
-            behaviors += behavior
         }
     }
 

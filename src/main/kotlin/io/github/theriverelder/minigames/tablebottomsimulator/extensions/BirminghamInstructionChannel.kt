@@ -1,6 +1,13 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions
 
+import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.ControllerBehavior
+import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.PlaceholderBehavior
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.City
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.Network
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.city
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.network
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.Channel
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.sendCommand
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
@@ -50,6 +57,30 @@ class BirminghamInstructionChannel(val extension: BirminghamExtension) :
             }
 
             "reset_action_options" -> extension.birminghamGame?.getGamerByUserUid(sender.uid)?.actionGuide?.reset()
+
+            "create_empty_city_object" -> {
+                val gameObject = simulator.createAndAddGameObject()
+                gameObject.createAndAddBehavior(PlaceholderBehavior.TYPE)
+                val controllerBehavior = gameObject.createAndAddBehavior(ControllerBehavior.TYPE)
+                controllerBehavior.draggable = true
+                controllerBehavior.sendUpdate()
+                gameObject.city = City("enter_city_name", 0, listOf("enter_factory_type"), gameObject.uid)
+                gameObject.shape = "rectangle"
+                gameObject.size = extension.cardSeriesFactory.size ?: Vector2(180, 180)
+                gameObject.sendUpdateFull()
+            }
+
+            "create_empty_network_object" -> {
+                val gameObject = simulator.createAndAddGameObject()
+                gameObject.createAndAddBehavior(PlaceholderBehavior.TYPE)
+                val controllerBehavior = gameObject.createAndAddBehavior(ControllerBehavior.TYPE)
+                controllerBehavior.draggable = true
+                controllerBehavior.sendUpdate()
+                gameObject.network = Network(listOf("enter_city_name"), listOf(1, 2), gameObject.uid)
+                gameObject.shape = "circle"
+                gameObject.size = extension.cardSeriesWay.size ?: Vector2(190, 80)
+                gameObject.sendUpdateFull()
+            }
         }
     }
 

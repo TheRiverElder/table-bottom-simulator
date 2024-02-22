@@ -49,6 +49,8 @@ class BirminghamGame(
             ?: throw Exception("Cannot find user with ordinal: $currentOrdinal")
 
     fun initialize() {
+        period = 1
+
         simulator.gamers.clear()
 
         val random = Random(currentTimeMillis())

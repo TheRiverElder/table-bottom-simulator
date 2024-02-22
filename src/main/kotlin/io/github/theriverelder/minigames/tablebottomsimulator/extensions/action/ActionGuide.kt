@@ -17,7 +17,7 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
         ActionCreator("sell", ::SellAction),
         ActionCreator("loan", ::LoanAction),
         ActionCreator("scout", ::ScoutAction),
-        ActionCreator("network(loan)") { user, costCardObjectUid -> LoanAction(user, costCardObjectUid) },
+        ActionCreator("network", ::NetworkAction),
         ActionCreator("develop", ::DevelopAction),
     )
 

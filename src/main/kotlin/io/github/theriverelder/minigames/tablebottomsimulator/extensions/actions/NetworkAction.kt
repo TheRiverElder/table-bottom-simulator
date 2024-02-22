@@ -36,7 +36,7 @@ class NetworkAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int
                 return ActionOptions("选择放置 $wayTypeName 的数量：", buildList(maxNetworkAmountInThisAction) {
                     repeat(maxNetworkAmountInThisAction) { index ->
                         val amount = index + 1
-                        add(ActionOption("${amount + 1} 条") {
+                        add(ActionOption("$amount 条") {
                             this@NetworkAction.networkAmountInThisAction = amount
                         })
                     }
@@ -45,7 +45,7 @@ class NetworkAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int
                 val options = game.extension.birminghamMap.networkList
                     .mapNotNull { game.extension.simulator.gameObjects[it.placeholderObjectUid] }
                     .filter { it.tags.containsKey("birmingham:network") }
-                    .filter { it.getBehaviorByType(PlaceholderBehavior.TYPE)?.holdingGameObject == null }
+                    .filter { it.getBehaviorByType(PlaceholderBehavior.TYPE)?.let { it.holdingGameObject == null } ?: false }
                     .map {
                         val uid = it.uid
                         val network = it.network

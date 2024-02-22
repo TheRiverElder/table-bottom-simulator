@@ -25,5 +25,5 @@ class PlaceholderBehavior(type: BehaviorType<PlaceholderBehavior>, host: GameObj
     private fun checkHolding(gameObject: GameObject): Boolean = gameObject.uid != uid &&
             gameObject.position in area &&
             gameObject.getBehaviorByType(TYPE) == null &&
-            gameObject.tags.containsKey("tbs:ignored_by_placeholder")
+            !gameObject.tags.containsKey("tbs:ignored_by_placeholder")
 }
