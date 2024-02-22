@@ -29,7 +29,7 @@ class BirminghamExtension(
 
     lateinit var cardSeriesCard: CardSeries
     lateinit var cardSeriesFactory: CardSeries
-    lateinit var cardSeriesNetwork: CardSeries
+    lateinit var cardSeriesWay: CardSeries
 
     init {
         run {
@@ -70,13 +70,13 @@ class BirminghamExtension(
         }
         run {
             val prefix = "http://localhost:8089/minigames/birmingham/image/gamers/"
-            val cardSeries = CardSeries("birmingham:network", "", Vector2(190, 80))
+            val cardSeries = CardSeries("birmingham:way", "", Vector2(190, 80))
             GAMER_COLORS.forEach { gamerColor ->
                 cardSeries.cards.add(Card("${gamerColor}_canal", cardSeries, prefix + "${gamerColor}/canal.png"))
                 cardSeries.cards.add(Card("${gamerColor}_rail", cardSeries, prefix + "${gamerColor}/rail.png"))
             }
             CardSeries.SERIES.add(cardSeries)
-            cardSeriesNetwork = cardSeries
+            cardSeriesWay = cardSeries
         }
 
         simulator.channelCard.sendCardSerieses()

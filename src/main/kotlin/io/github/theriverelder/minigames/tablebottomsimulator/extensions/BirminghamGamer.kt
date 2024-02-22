@@ -5,7 +5,10 @@ import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel.UpdateGameObjectSelfOptions
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionGuide
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.Factory
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.Way
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.factory
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.way
+import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
 import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
@@ -89,6 +92,21 @@ class BirminghamGamer(
             }
             factoryObjectUidStacks[typeName] = factoryList
         }
+    }
+
+    fun createWayObject(period: Int = game.period): GameObject {
+        val networkName = when (period) {
+            1 -> "canal"
+            2 -> "rail"
+            else -> "error"
+        }
+        val gamer = gamer!!
+        val gameObject = game.simulator.createAndAddGameObject()
+        val card = game.extension.cardSeriesWay.cards["${gamer.color}_${networkName}"]!!
+        gameObject.card = card
+        gameObject.way = Way(period, gamerUid)
+        gameObject.sendUpdateFull()
+        return gameObject
     }
 }
 
