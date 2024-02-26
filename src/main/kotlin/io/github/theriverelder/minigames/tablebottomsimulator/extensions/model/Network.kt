@@ -11,7 +11,7 @@ class Network(
     val cityNames: List<String>,
     val periods: List<Int>,
     val placeholderObjectUid: Int,
-) : Persistable {
+) : Persistable, GraphNode<CityGroup, BirminghamGraphNodeContext> {
     override fun save(): JsonObject = buildJsonObject {
         put("cityNames", cityNames.save())
         put("periods", periods.save())
@@ -19,6 +19,14 @@ class Network(
     }
 
     override fun restore(data: JsonObject) { }
+
+    override var neighbors: List<CityGroup> = emptyList()
+
+    override fun canPass(context: BirminghamGraphNodeContext): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    var cachedWay: Way? = null
 
 }
 
@@ -28,18 +36,22 @@ fun restoreNetwork(data: JsonObject): Network = Network(
     data.forceGet("placeholderObjectUid").jsonPrimitive.int,
 )
 
-var GameObject.network: Network
+var GameObject.network: Network?
     get() {
-        val tag = tags["birmingham:network"]
-        val periodsString = tag?.getString(0) ?: ""
+        val tag = tags["birmingham:network"] ?: return null
+        val periodsString = tag.getString(0) ?: ""
         val periods = buildList(2) {
             if (periodsString.contains('c')) add(1)
             if (periodsString.contains('r')) add(2)
         }
-        val cityNames = tag?.values?.drop(1)?.mapNotNull { it as? String }?.filter { it.isNotBlank() } ?: emptyList()
+        val cityNames = tag.values?.drop(1)?.mapNotNull { it as? String }?.filter { it.isNotBlank() } ?: emptyList()
         return Network(cityNames, periods, uid)
     }
     set(value) {
+        if (value == null) {
+            tags.removeByKey("birmingham:network")
+            return
+        }
         var periodString = ""
         for (period in value.periods) {
             periodString += when (period) {

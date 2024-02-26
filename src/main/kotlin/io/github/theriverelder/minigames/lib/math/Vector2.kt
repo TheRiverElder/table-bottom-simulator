@@ -1,5 +1,6 @@
 package io.github.theriverelder.minigames.lib.math
 
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -20,11 +21,12 @@ class Vector2(
     operator fun rem(number: Number) = Vector2(x % number.toDouble(), y % number.toDouble())
 
     val modSquared: Double get() = x * x + y * y
-    val mod: Double get() = sqrt(modSquared)
+    val modulo: Double get() = sqrt(modSquared)
+    val angle: Double get() = atan2(y, x)
 
     override fun toString(): String = "(${x}, ${y})"
     companion object {
-        fun fromPolar(theta: Double, rho: Double) = Vector2(rho * cos(theta), rho * sin(theta))
+        fun fromPolar(angle: Double, modulo: Double) = Vector2(modulo * cos(angle), modulo * sin(angle))
 
         fun zero() = Vector2(0.0, 0.0)
     }

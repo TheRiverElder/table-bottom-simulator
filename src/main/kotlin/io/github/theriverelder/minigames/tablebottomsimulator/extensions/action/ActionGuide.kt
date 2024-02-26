@@ -81,6 +81,8 @@ class ActionGuide(val birminghamGamer: BirminghamGamer) {
             }
         }
 
+        birminghamGamer.game.extension.birminghamMap.cacheHoldingObjects()
+
         birminghamGamer.gamer?.cleanupCards(50.0)
         birminghamGamer.game.listenerGameStateUpdated.emit(birminghamGamer.game)
         birminghamGamer.game.listenerActionOptionsUpdated.emit(birminghamGamer)

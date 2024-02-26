@@ -1,12 +1,10 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions.actions
 
-import io.github.theriverelder.minigames.tablebottomsimulator.builtin.behavior.PlaceholderBehavior
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel.UpdateGameObjectSelfOptions
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.BirminghamGamer
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionBase
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionOption
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionOptions
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.network
 
 class NetworkAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) :
     ActionBase(birminghamGamer.user!!, costCardObjectUid) {
@@ -42,17 +40,12 @@ class NetworkAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int
                     }
                 })
             } else if (networkUidList.size < networkAmount) {
-                val options = game.extension.birminghamMap.networkList
-                    .mapNotNull { game.extension.simulator.gameObjects[it.placeholderObjectUid] }
-                    .filter { it.tags.containsKey("birmingham:network") }
-                    .filter { it.getBehaviorByType(PlaceholderBehavior.TYPE)?.let { it.holdingGameObject == null } ?: false }
+                val options = game.extension.birminghamMap.networks.values
+                    .filter { it.cachedWay == null }
                     .map {
-                        val uid = it.uid
-                        val network = it.network
-                        ActionOption("在 ${network.cityNames.joinToString(" 与 ")} 之间") {
-                            networkObjectUidList.add(
-                                uid
-                            )
+                        val uid = it.placeholderObjectUid
+                        ActionOption("在 ${it.cityNames.joinToString(" 与 ")} 之间") {
+                            networkObjectUidList.add(uid)
                         }
                     }
                 return ActionOptions("选择放置道路的位置（${networkUidList.size + 1}/${networkAmount}）：", options)

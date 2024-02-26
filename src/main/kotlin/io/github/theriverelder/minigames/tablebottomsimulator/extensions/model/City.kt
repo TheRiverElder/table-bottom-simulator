@@ -20,8 +20,11 @@ class City(
         put("placeholderObjectUid", placeholderObjectUid)
     }
 
-    override fun restore(data: JsonObject) { }
+    override fun restore(data: JsonObject) {}
 
+    lateinit var group: CityGroup
+
+    var cachedFactory: Factory? = null
 }
 
 fun restoreCity(data: JsonObject): City = City(
@@ -31,11 +34,17 @@ fun restoreCity(data: JsonObject): City = City(
     data.forceGet("placeholderObjectUid").jsonPrimitive.int,
 )
 
-var GameObject.city: City
+var GameObject.city: City?
     get() {
-        val tag = tags["birmingham:city"]!!
+        val tag = tags["birmingham:city"] ?: return null
         return City(tag.getString(0), tag.getInt(1), tag.values.drop(2).mapNotNull { it as? String }, uid)
     }
     set(value) {
-        tags.add(GameObjectTag("birmingham:city", (listOf(value.name, value.index) + value.factoryTypeNames).toMutableList()))
+        if (value == null) tags.removeByKey("birmingham:city")
+        else tags.add(
+            GameObjectTag(
+                "birmingham:city",
+                (listOf(value.name, value.index) + value.factoryTypeNames).toMutableList()
+            )
+        )
     }

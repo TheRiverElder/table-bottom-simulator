@@ -9,6 +9,7 @@ data class Factory(
     val typeName: String,
     val level: Int,
     val status: String,
+    val gameObjectUid: Int,
 ) {
 
     companion object {
@@ -33,17 +34,18 @@ data class Factory(
 }
 
 
-var GameObject.factory: Factory
+var GameObject.factory: Factory?
     get() {
-        val tag = tags["birmingham:factory"]!!
+        val tag = tags["birmingham:factory"] ?: return null
         val ownerGamerUid = tag.getInt(0)
         val typeName = tag.getString(1)
         val level = tag.getInt(2)
         val status = tag.getString(3)
-        return Factory(ownerGamerUid, typeName, level, status)
+        return Factory(ownerGamerUid, typeName, level, status, uid)
     }
     set(value) {
-        tags.add(
+        if (value == null) tags.removeByKey("birmingham:factory")
+        else tags.add(
             GameObjectTag(
                 "birmingham:factory", arrayListOf(
                     value.ownerGamerUid,

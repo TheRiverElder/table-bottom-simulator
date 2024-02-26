@@ -4,10 +4,7 @@ import io.github.theriverelder.minigames.lib.math.Vector2
 import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.builtin.channel.UpdateGameObjectSelfOptions
 import io.github.theriverelder.minigames.tablebottomsimulator.extensions.action.ActionGuide
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.Factory
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.Way
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.factory
-import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.way
+import io.github.theriverelder.minigames.tablebottomsimulator.extensions.model.*
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.Gamer
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.user.User
@@ -74,7 +71,7 @@ class BirminghamGamer(
                 buildList(amountOfLevel) {
                     repeat(amountOfLevel) { indexOfSameLevel ->
                         val obj = game.simulator.createAndAddGameObject()
-                        obj.factory = Factory(gamerUid, typeName, level, Factory.STATUS_READY)
+                        obj.factory = Factory(gamerUid, typeName, level, Factory.STATUS_READY, obj.uid)
                         val cardName = "${gamer.color}_${typeName}_level_${(level).toString().padStart(2, '0')}"
                         val card = game.extension.cardSeriesFactory.cards[cardName]!!
                         obj.card = card
@@ -104,9 +101,14 @@ class BirminghamGamer(
         val gameObject = game.simulator.createAndAddGameObject()
         val card = game.extension.cardSeriesWay.cards["${gamer.color}_${networkName}"]!!
         gameObject.card = card
-        gameObject.way = Way(period, gamerUid)
+        gameObject.way = Way(period, gamerUid, gameObject.uid)
         gameObject.sendUpdateFull()
         return gameObject
+    }
+
+    // 只进行GameObject的操作，不检查条件
+    fun build(factory: Factory, city: City) {
+        factory.ownerGamerUid
     }
 }
 

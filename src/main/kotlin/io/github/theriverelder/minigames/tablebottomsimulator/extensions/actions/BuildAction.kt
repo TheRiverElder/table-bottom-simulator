@@ -33,7 +33,7 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) 
                         ?: return ActionOptions("不是合法的工厂牌或城市牌：", listOf(
                             ActionOption("重新选牌") { birminghamGamer.actionGuide?.reset() }
                         ))
-                    val cities = extension.birminghamMap.cityList
+                    val cities = extension.birminghamMap.cities.values
                         .filter { it.name == cityName || cityName == "" }
                         .filter {
                             val gameObject = game.simulator.gameObjects[it.placeholderObjectUid] ?: return@filter false
@@ -59,7 +59,7 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) 
             } else if (cityObjectUid == null) {
                 val cityName = costCard.cityName
                 val cities: List<City> = if (cityName != null)
-                    extension.birminghamMap.cityList
+                    extension.birminghamMap.cities.values
                         .filter { it.name == cityName }
                         .filter {
                             val gameObject = game.simulator.gameObjects[it.placeholderObjectUid] ?: return@filter false
@@ -69,7 +69,7 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) 
                         }
                 else {
                     val factory = birminghamGamer.gamer!!.simulator.gameObjects[factoryObjectUid]!!.factory
-                    extension.birminghamMap.cityList.filter { it.factoryTypeNames.contains(factory.typeName) }
+                    extension.birminghamMap.cities.values.filter { it.factoryTypeNames.contains(factory?.typeName) }
                 }
 
                 ActionOptions("选择城市：", cities.map {
@@ -93,7 +93,7 @@ class BuildAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) 
         val factoryObject = birminghamGamer.gamer!!.simulator.gameObjects[factoryObjectUid]!!
         val cityObject = birminghamGamer.gamer!!.simulator.gameObjects[cityObjectUid!!]!!
 
-        val factory = factoryObject.factory
+        val factory = factoryObject.factory ?: return
 
         factoryObject.position = cityObject.position
         val newList = birminghamGamer.factoryObjectUidStacks[factory.typeName]!!.toMutableList()
