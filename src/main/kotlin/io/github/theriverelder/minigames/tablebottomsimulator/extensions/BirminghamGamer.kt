@@ -17,7 +17,10 @@ class BirminghamGamer(
     val gamerUid: Int,
     val ordinal: Int,
     var money: Int = 0,
+    incomePoints: Int = 10,
 ) : Persistable {
+
+    val incomeTrack: IncomeTrack = IncomeTrack(points = incomePoints)
 
     var actionGuide: ActionGuide? = null
 
@@ -34,11 +37,22 @@ class BirminghamGamer(
         put("gamerUid", gamer?.uid)
         put("ordinal", ordinal)
         put("money", money)
+        put("incomeTrackPoints", incomeTrack.points)
+        put("factoryObjectUidStacks", factoryObjectUidStacks.save())
+    }
+
+    fun extractData(): JsonObject = buildJsonObject {
+        put("gamerUid", gamer?.uid)
+        put("ordinal", ordinal)
+        put("money", money)
+        put("incomeTrackPoints", incomeTrack.points)
+        put("incomeTrackLevel", incomeTrack.level)
         put("factoryObjectUidStacks", factoryObjectUidStacks.save())
     }
 
     override fun restore(data: JsonObject) {
         money = data.forceGet("money").jsonPrimitive.int
+        incomeTrack.points = data.forceGet("incomeTrackPoints").jsonPrimitive.int
         factoryObjectUidStacks.clear()
         data.forceGet("factoryObjectUidStacks").jsonObject.forEach { k, v ->
             factoryObjectUidStacks[k] = v.jsonArray.map { it.jsonPrimitive.int }

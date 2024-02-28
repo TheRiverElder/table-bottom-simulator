@@ -120,7 +120,7 @@ class BirminghamInstructionChannel(val extension: BirminghamExtension) :
 //        if (birminghamGamer == null) throw Exception("Gamer not found")
 //        val birminghamGamer = birminghamGame?.getGamerByUserUid(user.uid)
 
-        val commandData = birminghamGame?.save() ?: JsonNull
+        val commandData = birminghamGame?.extractData() ?: JsonNull
 
         sendCommand(receiver, "update_game_state", commandData)
     }

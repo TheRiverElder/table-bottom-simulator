@@ -145,6 +145,14 @@ class BirminghamGame(
         put("cardGameObjectUidList", cardGameObjectUidList.save())
     }
 
+    fun extractData(): JsonObject = buildJsonObject {
+        put("gamerAmount", gamerAmount)
+        put("period", period)
+        put("currentOrdinal", currentOrdinal)
+        put("gamerList", buildJsonArray { gamerList.forEach { add(it.extractData()) } })
+        put("cardGameObjectUidList", cardGameObjectUidList.save())
+    }
+
     override fun restore(data: JsonObject) {
         period = data.forceGet("period").jsonPrimitive.int
         currentOrdinal = data.forceGet("currentOrdinal").jsonPrimitive.int
