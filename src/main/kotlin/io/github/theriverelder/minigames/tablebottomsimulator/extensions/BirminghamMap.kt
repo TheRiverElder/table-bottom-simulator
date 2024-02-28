@@ -86,8 +86,8 @@ class BirminghamMap(
         marketGroupList.forEach { group -> group.content.forEach { it.group = group } }
 
         val groupNameMap = buildMap {
-            cityGroupList.forEach { set(it.name, CityGroupOrMarketGroup(it)) }
-            marketGroupList.forEach { set(it.name, CityGroupOrMarketGroup(it)) }
+            cityGroupList.forEach { set(it.name, wrapCityGroup(it)) }
+            marketGroupList.forEach { set(it.name, wrapMarketGroup(it)) }
         }
 
         for (network in networks.values) {
