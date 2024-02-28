@@ -11,7 +11,7 @@ class Network(
     val cityNames: List<String>,
     val periods: List<Int>,
     val placeholderObjectUid: Int,
-) : Persistable, GraphNode<CityGroup, BirminghamGraphNodeContext> {
+) : Persistable, GraphNode<Group, BirminghamGraphNodeContext> {
     override fun save(): JsonObject = buildJsonObject {
         put("cityNames", cityNames.save())
         put("periods", periods.save())
@@ -20,7 +20,7 @@ class Network(
 
     override fun restore(data: JsonObject) { }
 
-    override var neighbors: List<CityGroup> = emptyList()
+    override var neighbors: List<Group> = emptyList()
 
     override fun canPass(context: BirminghamGraphNodeContext): Boolean {
         TODO("Not yet implemented")

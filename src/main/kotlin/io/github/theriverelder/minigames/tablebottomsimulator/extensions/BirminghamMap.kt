@@ -17,10 +17,11 @@ class BirminghamMap(
 
     val cities = Registry<Int, City> { it.placeholderObjectUid }
     val networks = Registry<Int, Network> { it.placeholderObjectUid }
-    val markets = Registry<Int, City> { it.placeholderObjectUid } // TODO
+    val markets = Registry<Int, Market> { it.placeholderObjectUid }
 
     // 不序列化
-    val cityGroupList = mutableListOf<CityGroup>()
+    val cityGroupList = mutableListOf<Group<City, Network>>()
+    val marketGroupList = mutableListOf<Group<Market, Network>>()
 
     override fun save(): JsonObject = buildJsonObject {
         put("cities", cities.save())
@@ -42,6 +43,7 @@ class BirminghamMap(
 
         cities.clear()
         networks.clear()
+        markets.clear()
 
         for (gameObject in extension.simulator.gameObjects.values) {
             val city = gameObject.city
@@ -56,6 +58,11 @@ class BirminghamMap(
                 networks.add(network)
                 continue
             }
+            val market = gameObject.market
+            if (market != null) {
+                markets.add(market)
+                continue
+            }
         }
 
         buildGraph()
@@ -66,8 +73,13 @@ class BirminghamMap(
 
         cityGroupList.clear()
         cityGroupList.addAll(cities.values.groupBy { it.name }
-            .map { pair -> CityGroup(pair.key).also { it.cities = pair.value.toList() } })
-        cityGroupList.forEach { group -> group.cities.forEach { it.group = group } }
+            .map { pair -> Group<City, Network>(pair.key).also { it.content = pair.value.toList() } })
+        cityGroupList.forEach { group -> group.content.forEach { it.group = group } }
+
+        marketGroupList.clear()
+        marketGroupList.addAll(markets.values.groupBy { it.name }
+            .map { pair -> Group<Market, Network>(pair.key).also { it.content = pair.value.toList() } })
+        marketGroupList.forEach { group -> group.content.forEach { it.group = group } }
 
         val cityGroupNameMap = buildMap { cityGroupList.forEach { set(it.name, it) } }
 
@@ -86,6 +98,9 @@ class BirminghamMap(
         for (network in networks.values) {
             network.cachedWay = getHoldingWay(extension, network.placeholderObjectUid)
         }
+        for (market in markets.values) {
+            market.cachedTavern = getHoldingTavern(extension, market.placeholderObjectUid)
+        }
     }
 
     // 检查是否能把工厂建在某个城市
@@ -96,7 +111,7 @@ class BirminghamMap(
         // 如果产业类型对应不上，也不能建造
         if (factory.typeName !in city.factoryTypeNames) return false
         // 如果该地区已经有该玩家的建筑：运河时代，不能建造；铁路时代：可以建造
-        if (city.group.cities.any { it.cachedFactory?.ownerGamerUid == gamer.gamerUid }) {
+        if (city.group.content.any { it.cachedFactory?.ownerGamerUid == gamer.gamerUid }) {
             return when (extension.birminghamGame?.period) {
                 1 -> false
                 2 -> true

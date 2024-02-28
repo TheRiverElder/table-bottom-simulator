@@ -1,50 +1,44 @@
 package io.github.theriverelder.minigames.tablebottomsimulator.extensions.model
 
-import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObject
+import io.github.theriverelder.minigames.lib.util.forceGet
 import io.github.theriverelder.minigames.tablebottomsimulator.simulator.gameobject.GameObjectTag
 import io.github.theriverelder.minigames.tablebottomsimulator.util.Persistable
 import io.github.theriverelder.minigames.tablebottomsimulator.util.save
 import kotlinx.serialization.json.*
 
-class City(
-    val name: String,
-    val index: Int,
+class Tavern(
     val factoryTypeNames: List<String>,
-    val placeholderObjectUid: Int,
+    val gameObjectUid: Int,
 ) : Persistable {
     override fun save(): JsonObject = buildJsonObject {
-        put("name", name)
-        put("index", index)
         put("factoryTypeNames", factoryTypeNames.save())
-        put("placeholderObjectUid", placeholderObjectUid)
+        put("gameObjectUid", gameObjectUid)
     }
 
     override fun restore(data: JsonObject) {}
 
-    lateinit var group: Group<City, Network>
+    lateinit var group: Group<Market, Network>
 
     var cachedFactory: Factory? = null
 }
 
-fun restoreCity(data: JsonObject): City = City(
-    data.forceGet("name").jsonPrimitive.content,
-    data.forceGet("index").jsonPrimitive.int,
+fun restoreTavern(data: JsonObject): Tavern = Tavern(
     data.forceGet("factoryTypeNames").jsonArray.map { it.jsonPrimitive.content },
-    data.forceGet("placeholderObjectUid").jsonPrimitive.int,
+    data.forceGet("gameObjectUid").jsonPrimitive.int,
 )
 
-var GameObject.city: City?
+var GameObject.tavern: Tavern?
     get() {
-        val tag = tags["birmingham:city"] ?: return null
-        return City(tag.getString(0), tag.getInt(1), tag.values.drop(2).mapNotNull { it as? String }, uid)
+        val tag = tags["birmingham:tavern"] ?: return null
+        return Tavern(tag.values.mapNotNull { it as? String }, uid)
     }
     set(value) {
-        if (value == null) tags.removeByKey("birmingham:city")
+        if (value == null) tags.removeByKey("birmingham:tavern")
         else tags.add(
             GameObjectTag(
-                "birmingham:city",
-                (listOf(value.name, value.index) + value.factoryTypeNames).toMutableList()
+                "birmingham:tavern",
+                value.factoryTypeNames.toMutableList(),
             )
         )
     }

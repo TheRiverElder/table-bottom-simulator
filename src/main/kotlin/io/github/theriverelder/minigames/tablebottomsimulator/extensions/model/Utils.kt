@@ -24,3 +24,11 @@ fun getHoldingWay(extension: BirminghamExtension, placeholderObjectUid: Int): Wa
     }
     return null
 }
+
+fun getHoldingTavern(extension: BirminghamExtension, placeholderObjectUid: Int): Tavern? {
+    for (holdingObject in getHoldingObjects(extension, placeholderObjectUid)) {
+        val tavern = holdingObject.tavern
+        if (tavern != null) return tavern
+    }
+    return null
+}
