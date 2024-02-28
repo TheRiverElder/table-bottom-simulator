@@ -25,7 +25,8 @@ class BirminghamMap(
 
     override fun save(): JsonObject = buildJsonObject {
         put("cities", cities.save())
-        put("networkList", networks.save())
+        put("networks", networks.save())
+        put("markets", markets.save())
     }
 
     override fun restore(data: JsonObject) {
@@ -33,6 +34,9 @@ class BirminghamMap(
         cities += data.forceGet("cities").jsonArray.map { restoreCity(it.jsonObject) }
         networks.clear()
         networks += data.forceGet("networks").jsonArray.map { restoreNetwork(it.jsonObject) }
+        markets.clear()
+        markets += data.forceGet("markets").jsonArray.map { restoreMarket(it.jsonObject) }
+
         buildGraph()
         cacheHoldingObjects()
     }
@@ -81,13 +85,15 @@ class BirminghamMap(
             .map { pair -> Group<Market, Network>(pair.key).also { it.content = pair.value.toList() } })
         marketGroupList.forEach { group -> group.content.forEach { it.group = group } }
 
-        val cityGroupNameMap = buildMap { cityGroupList.forEach { set(it.name, it) } }
-
+        val groupNameMap = buildMap {
+            cityGroupList.forEach { set(it.name, CityGroupOrMarketGroup(it)) }
+            marketGroupList.forEach { set(it.name, CityGroupOrMarketGroup(it)) }
+        }
 
         for (network in networks.values) {
-            val cityGroups = network.cityNames.mapNotNull { cityGroupNameMap[it] }
-            network.neighbors = cityGroups
-            cityGroups.forEach { it.neighbors += network }
+            val groups = network.cityNames.mapNotNull { groupNameMap[it] }
+            network.neighbors = groups
+            groups.forEach { it.origin.neighbors += network }
         }
     }
 

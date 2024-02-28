@@ -44,7 +44,8 @@ class SellAction(val birminghamGamer: BirminghamGamer, costCardObjectUid: Int) :
 
                 val options =
                     game.extension.birminghamMap.markets.values.mapNotNull { market ->
-                        ActionOption("卖到 ${city.name} 第${city.index + 1}个槽（${market.factoryTypeNames.joinToString()}）") {
+                        val tavern = market.cachedTavern ?: return@mapNotNull null
+                        ActionOption("卖到 ${city.name} 第${city.index + 1}个槽（${tavern.factoryTypeNames.joinToString()}）") {
                             this.marketObjectUidList.add(city.placeholderObjectUid)
                         }
                     }
